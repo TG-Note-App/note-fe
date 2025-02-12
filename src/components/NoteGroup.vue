@@ -5,6 +5,7 @@
       :key="note.id"
       :title="note.title"
       :text="note.text"
+      :lastModified="note.lastModified"
     />
   </div>
 </template>

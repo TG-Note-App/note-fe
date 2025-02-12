@@ -12,13 +12,21 @@
     <!-- Content container -->
     <div class="relative">
       <h4 
-        class="mb-3 flex items-center text-xl font-medium text-white
+        class="mb-2 flex items-center text-xl font-medium text-white
           group-hover:text-blue-200 transition-colors duration-300"
       >
         {{ title }}
       </h4>
       
-      <div class="flex items-start gap-3">
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-500 min-w-[70px]">
+          {{ new Date(lastModified).toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit', 
+            year: 'numeric'
+          }) }}
+        </span>
+
         <p 
           class="flex-1 line-clamp-2 leading-relaxed text-gray-400
             group-hover:text-gray-300 transition-colors duration-300"
@@ -32,12 +40,10 @@
 
 <script setup>
 defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  text: {
-    type: String,
+  title: String,
+  text: String,
+  lastModified: {
+    type: [Date, String, Number],
     required: true
   }
 })
