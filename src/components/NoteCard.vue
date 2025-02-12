@@ -30,13 +30,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// Type definitions for props
-interface Props {
-  title: string
-  text: string
-}
-
+<script setup>
 defineProps({
   title: {
     type: String,

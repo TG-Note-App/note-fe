@@ -7,13 +7,11 @@
       placeholder="Поиск заметок..."
       class="search-input"
     />
-    <SearchIcon class="search-icon" />
+    <i class="bi bi-search search-icon"></i>
   </div>
 </template>
 
 <script setup>
-import SearchIcon from './icons/SearchIcon.vue';
-
 defineProps({
   modelValue: {
     type: String,

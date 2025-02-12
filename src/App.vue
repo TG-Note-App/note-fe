@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-4xl mx-auto px-8">
-      <AppHeader @add-note="createNewNote" />
+      <AppHeader/>
       <SearchBar v-model="search" />
       <NotesList :notes="filteredNotes" />
     </div>
@@ -39,18 +39,6 @@ const filteredNotes = computed(() => {
       )
     : notes.value;
 });
-
-// Methods
-const createNewNote = () => {
-  const newNote = {
-    id: Date.now(),
-    title: '',
-    text: '',
-    date: 'Сегодня',
-    createdAt: new Date(),
-  };
-  notes.value.unshift(newNote);
-};
 </script>
 
 <style>
