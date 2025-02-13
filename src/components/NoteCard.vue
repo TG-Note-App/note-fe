@@ -2,8 +2,8 @@
   <div 
     class="group relative overflow-hidden rounded-xl p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-gray-700/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
   >
-    <!-- Gradient overlay -->
-    <div 
+    <RouterLink :to="`/notes/${id}`">
+      <div 
       class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-blue-500/10 
         opacity-0 group-hover:opacity-100 transition-opacity duration-500
         animate-gradient-x"
@@ -36,6 +36,9 @@
         </p>
       </div>
     </div>
+    </RouterLink>
+    <!-- Gradient overlay -->
+    
   </div>
 </template>
 
@@ -50,6 +53,7 @@ const props = defineProps({
 })
 
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const textPreview = ref(null)
 const truncatedText = computed(() => {
