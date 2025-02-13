@@ -34,6 +34,9 @@ export const useNotesStore = defineStore('notes', {
       if (index !== -1) {
         this.notes[index] = updatedNote
       }
+    },
+    deleteNote(noteId) {
+      this.notes = this.notes.filter(note => note.id !== noteId)
     }
   }
 }) 

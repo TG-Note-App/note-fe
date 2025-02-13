@@ -3,7 +3,10 @@
     <div class="max-w-4xl mx-auto px-8">
       <AppHeader @new-note="handleNewNote" />
       <SearchBar v-model="search"/>
-      <NotesList :notes="filteredNotes" />
+      <NotesList 
+        :notes="filteredNotes" 
+        @deleteNote="handleDeleteNote"
+      />
     </div>
   </div>
 </template>
@@ -27,6 +30,11 @@ const filteredNotes = computed(() => notesStore.filteredNotes(search.value));
 
 const handleNewNote = () => {
   router.push('/notes/new');
+};
+
+const handleDeleteNote = (noteId) => {
+  console.log(noteId)
+  notesStore.deleteNote(noteId);
 };
 </script>
 

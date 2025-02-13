@@ -4,7 +4,10 @@
       class="space-y-4 first:animate-fadeIn"
     >
       <DateHeader :date="timeGroup" />
-      <NoteGroup :notes="notes" />
+      <NoteGroup 
+        :notes="notes" 
+        @deleteNote="handleDeleteNote"
+      />
     </div>
   </div>
 </template>
@@ -24,6 +27,8 @@ const props = defineProps({
     default: ''
   }
 });
+
+const emit = defineEmits(['deleteNote']);
 
 // Extract filtering logic to a separate computed property
 const filteredNotes = computed(() => 
@@ -83,4 +88,8 @@ const groupedNotes = computed(() => {
     Object.entries(groups).filter(([_, notes]) => notes.length > 0)
   );
 });
+
+const handleDeleteNote = (noteId) => {
+  emit('deleteNote', noteId);
+};
 </script> 
