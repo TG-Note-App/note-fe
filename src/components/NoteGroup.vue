@@ -3,6 +3,7 @@
     <NoteCard
       v-for="note in notes" 
       :key="note.id"
+      :id="note.id"
       :title="note.title"
       :text="note.text"
       :lastModified="note.lastModified"

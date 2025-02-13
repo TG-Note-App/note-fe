@@ -2,7 +2,7 @@
   <div 
     class="group relative overflow-hidden rounded-xl p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-gray-700/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
   >
-    <RouterLink :to="`/notes/${id}`">
+    <RouterLink :to="'/notes/' + id">
       <div 
       class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-blue-500/10 
         opacity-0 group-hover:opacity-100 transition-opacity duration-500
@@ -20,7 +20,7 @@
       
       <div class="flex items-center gap-3">
         <span class="text-gray-500">
-          {{ new Date(lastModified).toLocaleDateString('ru-RU', {
+          {{ new Date(props.lastModified).toLocaleDateString('ru-RU', {
             day: '2-digit',
             month: '2-digit', 
             year: 'numeric'
@@ -44,8 +44,19 @@
 
 <script setup>
 const props = defineProps({
-  title: String,
-  text: String,
+  id: {
+    type: [String, Number],
+    required: true,
+    default: 1,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  text: {
+    type: String,
+    required: true,
+  },
   lastModified: {
     type: [Date, String, Number],
     required: true
