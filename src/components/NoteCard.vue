@@ -19,7 +19,7 @@
       </h4>
       
       <div class="flex items-center gap-3">
-        <span class="text-sm text-gray-500 min-w-[70px]">
+        <span class="text-gray-500">
           {{ new Date(lastModified).toLocaleDateString('ru-RU', {
             day: '2-digit',
             month: '2-digit', 
@@ -28,10 +28,11 @@
         </span>
 
         <p 
-          class="flex-1 line-clamp-2 leading-relaxed text-gray-400
+          ref="textPreview"
+          class="flex-1 line-clamp-1 leading-relaxed text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis
             group-hover:text-gray-300 transition-colors duration-300"
         >
-          {{ text }}
+          {{ props.text }}
         </p>
       </div>
     </div>
@@ -39,12 +40,50 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   title: String,
   text: String,
   lastModified: {
     type: [Date, String, Number],
     required: true
+  }
+})
+
+import { ref, computed, onMounted, nextTick } from 'vue'
+
+const textPreview = ref(null)
+const truncatedText = computed(() => {
+  if (!props.text) return ''
+  return props.text
+})
+
+onMounted(async () => {
+  await nextTick()
+  if (textPreview.value) {
+    const element = textPreview.value
+    const originalText = props.text
+    let truncated = originalText
+    
+    // Create temporary span to measure text width
+    const span = document.createElement('span')
+    span.style.visibility = 'hidden'
+    span.style.position = 'absolute'
+    span.style.whiteSpace = 'nowrap'
+    span.style.font = window.getComputedStyle(element).font
+    document.body.appendChild(span)
+    
+    span.textContent = originalText
+    const textWidth = span.offsetWidth
+    const containerWidth = element.offsetWidth
+
+    if (textWidth > containerWidth) {
+      const ratio = containerWidth / textWidth
+      const charCount = Math.floor(originalText.length * ratio)
+      truncated = originalText.slice(0, charCount - 4) + '...'
+    }
+    
+    document.body.removeChild(span)
+    element.textContent = truncated
   }
 })
 </script> 

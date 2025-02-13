@@ -20,7 +20,7 @@ const notes = ref([
   {
     id: 1,
     title: 'Сегодняшняя заметка',
-    text: 'Текст внутри заметки',
+    text: 'Текст внутри заметкиewfjewjfiewjfiwejirjwejiewjrekwkrwekrjwekrjwelkrjlwejrlwejrwewkrewkrwkelrwk;;lrwellerjlwejr',
     date: 'Сегодня',
     lastModified: new Date('2024-01-15T10:30:00'),
   },
