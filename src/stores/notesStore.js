@@ -7,12 +7,11 @@ export const useNotesStore = defineStore('notes', {
         id: 1,
         title: 'Сегодняшняя заметка',
         text: 'Текст внутри заметкиewfjewjfiewjfiwejirjwejiewjrekwkrwekrjwekrjwelkrjlwejrlwejrwewkrewkrwkelrwk;;lrwellerjlwejr',
-        date: 'Сегодня',
-        lastModified: new Date('2024-01-15T10:30:00'),
+        lastModified: new Date('2025-02-13'),
       },
-      { id: 2, title: 'Вчерашняя заметка', text: 'Текст внутри заметки', date: 'Вчера', lastModified: new Date('2024-01-14T15:45:00') },
-      { id: 3, title: 'Заметка 1', text: 'Текст внутри заметки', date: 'Предыдущие 30 дней', lastModified: new Date('2023-12-28T09:15:00') },
-      { id: 4, title: 'Заметка 2', text: 'Текст внутри заметки', date: 'Предыдущие 30 дней', lastModified: new Date('2023-12-20T11:30:00') }
+      { id: 2, title: 'Вчерашняя заметка', text: 'Текст внутри заметки', lastModified: new Date('2025-02-12') },
+      { id: 3, title: 'Заметка 1', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20') },
+      { id: 4, title: 'Заметка 2', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20') }
     ]
   }),
   getters: {
@@ -24,6 +23,14 @@ export const useNotesStore = defineStore('notes', {
             note.text.toLowerCase().includes(lowercaseSearch)
           )
         : state.notes;
+    }
+  },
+  actions: {
+    updateNote(updatedNote) {
+      const index = this.notes.findIndex(note => note.id === updatedNote.id)
+      if (index !== -1) {
+        this.notes[index] = updatedNote
+      }
     }
   }
 }) 

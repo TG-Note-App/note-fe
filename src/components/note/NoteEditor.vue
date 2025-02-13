@@ -16,15 +16,13 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+
+const props = defineProps<{
   title: string
   content: string
 }>()
 
-defineEmits<{
-  (e: 'update:title', value: string): void
-  (e: 'update:content', value: string): void
-}>()
+
 </script>
 
 <style scoped>

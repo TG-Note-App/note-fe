@@ -1,16 +1,10 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-4xl mx-auto h-screen flex flex-col">
-      <NoteToolbar 
-        @share="handleShare"
-        @format="handleFormat"
-        @toggle-checklist="handleToggleChecklist"
-        @more="handleMore"
-      />
+      <NoteToolbar/>
       <NoteEditor
-        v-model:title="note.title"
-        v-model:content="note.text"
-        @update:content="handleContentUpdate"
+        v-model:title="noteRef.title"
+        v-model:content="noteRef.text"
       />
     </div>
   </div>
@@ -25,43 +19,31 @@ import NoteEditor from '../components/note/NoteEditor.vue'
 import type { Note } from '../types/note'
 
 const route = useRoute()
+const notesStore = useNotesStore()
+console.log(notesStore)
+
+// Get note ID from URL
+const noteId = parseInt(route.params.id as string)
 // Get note from store
-const note = ref<Note>({
-  id: null,
-  title: '',
-  text: '',
+const note = computed(() => notesStore.notes.find(note => note.id === noteId))
+const noteRef = ref<Note>({
+  id: note.value?.id?.toString() ?? null,
+  title: note.value?.title ?? '',
+  text: note.value?.text ?? '',
   lastModified: new Date()
 })
 
-
-
-
-
-async function saveNote() {
-  // Implement save logic here
-  console.log('Saving note...', note.value)
-}
-
-// Event handlers
-function handleContentUpdate() {
-//   note.lastModified = new Date()
-}
-
-function handleShare() {
-  // Implement share logic
-}
-
-function handleFormat() {
-  // Implement format logic
-}
-
-function handleToggleChecklist() {
-  // Implement checklist logic
-}
-
-function handleMore() {
-  // Implement more options logic
-}
+// Add watcher to sync changes back to store
+watch(noteRef, (newValue) => {
+  if (note.value) {
+    notesStore.updateNote({
+      ...note.value,
+      title: newValue.title,
+      text: newValue.text,
+      lastModified: new Date()
+    })
+  }
+}, { deep: true })
 
 </script>
 

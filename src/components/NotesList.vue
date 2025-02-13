@@ -1,9 +1,9 @@
 <template>
   <div class="mt-10 space-y-8">
-    <div v-for="(notes, date) in groupedNotes" :key="date" 
+    <div v-for="(notes, timeGroup) in groupedNotes" :key="timeGroup" 
       class="space-y-4 first:animate-fadeIn"
     >
-      <DateHeader :date="date" />
+      <DateHeader :date="timeGroup" />
       <NoteGroup :notes="notes" />
     </div>
   </div>
@@ -32,12 +32,55 @@ const filteredNotes = computed(() =>
   )
 );
 
-// Separate grouping logic
-const groupedNotes = computed(() => 
-  filteredNotes.value.reduce((acc, note) => {
-    acc[note.date] = acc[note.date] || [];
-    acc[note.date].push(note);
-    return acc;
-  }, {})
-);
+// Helper function to check if date is today
+const isToday = (date) => {
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
+};
+
+// Helper function to check if date is yesterday
+const isYesterday = (date) => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return date.toDateString() === yesterday.toDateString();
+};
+
+// Helper function to check if date is within last N days
+const isWithinDays = (date, days) => {
+  const compareDate = new Date();
+  compareDate.setDate(compareDate.getDate() - days);
+  return date >= compareDate;
+};
+
+// Updated grouping logic
+const groupedNotes = computed(() => {
+  const groups = {
+    'СЕГОДНЯ': [],
+    'ВЧЕРА': [],
+    'Последние 7 дней': [],
+    'Последние 30 дней': [],
+    'РАНЕЕ': []
+  };
+
+  filteredNotes.value.forEach(note => {
+    const noteDate = new Date(note.lastModified);
+    
+    if (isToday(noteDate)) {
+      groups['СЕГОДНЯ'].push(note);
+    } else if (isYesterday(noteDate)) {
+      groups['ВЧЕРА'].push(note);
+    } else if (isWithinDays(noteDate, 7)) {
+      groups['Последние 7 дней'].push(note);
+    } else if (isWithinDays(noteDate, 30)) {
+      groups['Последние 30 дней'].push(note);
+    } else {
+      groups['РАНЕЕ'].push(note);
+    }
+  });
+
+  // Remove empty groups
+  return Object.fromEntries(
+    Object.entries(groups).filter(([_, notes]) => notes.length > 0)
+  );
+});
 </script> 
