@@ -26,6 +26,9 @@ export const useNotesStore = defineStore('notes', {
     }
   },
   actions: {
+    addNote(note) {
+      this.notes.push(note)
+    },
     updateNote(updatedNote) {
       const index = this.notes.findIndex(note => note.id === updatedNote.id)
       if (index !== -1) {

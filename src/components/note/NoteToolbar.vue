@@ -3,6 +3,7 @@
     <RouterLink 
       to="/notes" 
       class="flex items-center text-gray-300 hover:text-blue-300 transition-colors"
+      @click.prevent="handleBack"
     >
       <i class="bi bi-arrow-left text-xl"></i>
     </RouterLink>
@@ -67,13 +68,25 @@
 </template>
 
 <script setup lang="ts">
-// Define props for note content and title
+import { inject } from 'vue'
+
 const props = defineProps<{
   noteTitle?: string;
   noteContent?: string;
 }>();
 
 const emit = defineEmits(['more', 'add-attachment', 'format', 'toggle-checklist', 'new-note', 'save']);
+
+const onBackClick = inject('onBackClick', () => {})
+
+const handleBack = async () => {
+  // First save the note
+  emit('save');
+  // Then execute the injected back click handler
+  onBackClick();
+  // Finally navigate back
+  window.history.back();
+}
 
 const handleSave = () => {
   emit('save');

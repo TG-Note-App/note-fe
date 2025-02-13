@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import NoteView from '../views/NoteView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+import AddNoteView from '../views/AddNoteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
           next('/notes')
         }
       }
+    },
+    {
+      path: '/notes/new',
+      name: 'new-note',
+      component: AddNoteView
     },
     {
       path: '/:pathMatch(.*)*',

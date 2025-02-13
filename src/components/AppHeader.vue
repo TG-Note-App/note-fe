@@ -16,11 +16,17 @@
         transform hover:scale-110 hover:rotate-180 
         hover:shadow-xl hover:shadow-gray-700/30"
     >
-      <i class="bi bi-plus-lg text-2xl"></i>
+      <i 
+      class="bi bi-plus-lg text-2xl"
+      @click="$emit('new-note')"
+      >
+    </i>
     </button>
   </div>
 </template>
 
 <script setup>
 import 'bootstrap-icons/font/bootstrap-icons.css'
+
+defineEmits(['new-note']);
 </script> 

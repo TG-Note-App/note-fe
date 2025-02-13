@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
     <div class="max-w-4xl mx-auto px-8">
-      <AppHeader/>
-      <SearchBar v-model="search" />
+      <AppHeader @new-note="handleNewNote" />
+      <SearchBar v-model="search"/>
       <NotesList :notes="filteredNotes" />
     </div>
   </div>
@@ -10,6 +10,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useNotesStore } from '../stores/notesStore';
 import AppHeader from '../components/AppHeader.vue';
@@ -17,10 +18,16 @@ import SearchBar from '../components/SearchBar.vue';
 import NotesList from '../components/NotesList.vue';
 
 // State
+const router = useRouter();
+
 const notesStore = useNotesStore();
 const search = ref('');
 
 const filteredNotes = computed(() => notesStore.filteredNotes(search.value));
+
+const handleNewNote = () => {
+  router.push('/notes/new');
+};
 </script>
 
 <style>

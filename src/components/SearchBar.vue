@@ -7,7 +7,9 @@
       placeholder="Поиск заметок..."
       class="search-input"
     />
-    <i class="bi bi-search search-icon"></i>
+    <i 
+      class="bi bi-search search-icon cursor-pointer" 
+    ></i>
   </div>
 </template>
 
