@@ -35,10 +35,15 @@
 
     <div class="fixed bottom-0 left-0 right-0 flex items-center justify-around space-x-4 p-4 bg-gray-900/80 backdrop-blur">
       <button 
-        class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
+        class="p-4 text-gray-300 hover:text-blue-300 transition-colors relative" 
         title="Add Attachment"
-        @click="$emit('add-attachment')"
       >
+        <input
+          type="file"
+          class="absolute inset-0 opacity-0 cursor-pointer"
+          @change="handleFileSelect"
+          multiple
+        >
         <i class="bi bi-paperclip text-2xl"></i>
       </button>
       <button 
@@ -53,7 +58,7 @@
         title="Checklist"
         @click="$emit('toggle-checklist')"
       >
-        <i class="bi bi-check-square text-2xl"></i>
+        <i class="bi bi-check2-square text-2xl"></i>
       </button>
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
@@ -75,7 +80,15 @@ const props = defineProps<{
   noteContent?: string;
 }>();
 
-const emit = defineEmits(['more', 'add-attachment', 'format', 'toggle-checklist', 'new-note', 'save']);
+const emit = defineEmits([
+  'more', 
+  'add-attachment', 
+  'format', 
+  'toggle-checklist', 
+  'new-note', 
+  'save',
+  'file-selected'
+]);
 
 const onBackClick = inject('onBackClick', () => {})
 
@@ -107,4 +120,19 @@ const handleShare = async () => {
     alert('Sharing is not supported in your browser');
   }
 };
+
+const handleFileSelect = (event: Event) => {
+  const files = (event.target as HTMLInputElement).files;
+  if (files && files.length > 0) {
+    emit('file-selected', Array.from(files));
+    // Reset the input so the same file can be selected again
+    (event.target as HTMLInputElement).value = '';
+  }
+};
+</script>
+
+<script lang="ts">
+export default {
+  name: 'NoteToolbar'
+}
 </script> 
