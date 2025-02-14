@@ -19,7 +19,7 @@
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
         title="More"
-        @click="$emit('more')"
+        @click="toggleSidePanel"
       >
         <i class="bi bi-three-dots-vertical text-2xl"></i>
       </button>
@@ -62,11 +62,44 @@
       </button>
     </div>
 
+    <!-- Add the side panel -->
+    <div 
+      v-if="showSidePanel" 
+      class="fixed top-12 right-4 w-64 bg-gray-800/95 backdrop-blur-xl shadow-2xl transform transition-all duration-200 ease-out rounded-xl border border-gray-700/30"
+      style="z-index: 1000;"
+    >
+      <div class="py-1">
+        <button 
+          class="w-full text-left px-4 py-3 text-gray-300 hover:bg-gray-700/50 transition-all duration-150 flex items-center group"
+          @click="$emit('find-in-note')"
+        >
+          <i class="bi bi-search mr-3 text-gray-400 group-hover:text-blue-300"></i>
+          <span class="text-sm">Find in Note</span>
+        </button>
+        <div class="h-[1px] bg-gray-700/30 mx-2"></div>
+        <button 
+          class="w-full text-left px-4 py-3 text-gray-300 transition-all duration-150 flex items-center group hover:bg-gray-700/50"
+          @click="$emit('delete-note')"
+        >
+          <i class="bi bi-trash mr-3 text-red-700 "></i>
+          <span class="text-sm">Delete Note</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Add overlay to close panel when clicking outside -->
+    <div 
+      v-if="showSidePanel" 
+      class="fixed inset-0 transition-opacity duration-200"
+      style="z-index: 999;"
+      @click="toggleSidePanel"
+    ></div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -74,6 +107,7 @@ const router = useRouter()
 const props = defineProps<{
   noteTitle?: string;
   noteContent?: string;
+  noteId?: number;
 }>();
 
 const emit = defineEmits([
@@ -83,10 +117,14 @@ const emit = defineEmits([
   'toggle-checklist', 
   'new-note', 
   'save',
-  'file-selected'
+  'file-selected',
+  'find-in-note',
+  'delete-note'
 ]);
 
 const onBackClick = inject('onBackClick', () => {})
+
+const showSidePanel = ref(false);
 
 const handleBack = async () => {
   // First save the note
@@ -125,6 +163,10 @@ const handleFileSelect = (event: Event) => {
     // Reset the input so the same file can be selected again
     (event.target as HTMLInputElement).value = '';
   }
+};
+
+const toggleSidePanel = () => {
+  showSidePanel.value = !showSidePanel.value;
 };
 </script>
 

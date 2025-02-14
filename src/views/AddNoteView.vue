@@ -32,7 +32,10 @@
       </div>
 
       <div class="max-w-4xl mx-auto h-screen flex flex-col">
-        <NoteToolbar/>
+        <NoteToolbar
+          :note-id="noteRef.id ? Number(noteRef.id) : undefined"
+          @delete-note="handleDeleteNote"
+        />
         <NoteEditor
           v-model:title="noteRef.title"
           v-model:content="noteRef.text"
@@ -43,14 +46,14 @@
   
   <script setup lang="ts">
   import { ref, onMounted, watch, computed, provide } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useNotesStore } from '../stores/notesStore'
   import NoteEditor from '../components/note/NoteEditor.vue'
   import NoteToolbar from '../components/note/NoteToolbar.vue'
   import type { Note } from '../types/note'
 
   const notesStore = useNotesStore()
-  const route = useRoute()
+  const router = useRouter()
 
   const noteRef = ref<Note>({
     id: null,
@@ -84,6 +87,14 @@
     if (noteRef.value.title || noteRef.value.text) {
       saveNote()
     }
+  }
+
+  // Add delete handler
+  const handleDeleteNote = () => {
+    if (noteRef.value.id) {
+      notesStore.deleteNote(noteRef.value.id)
+    }
+    router.push('/notes')
   }
 
   // Provide the method to NoteToolbar
