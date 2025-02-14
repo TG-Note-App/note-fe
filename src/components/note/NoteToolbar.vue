@@ -11,13 +11,6 @@
     <div class="flex items-center space-x-2">
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
-        title="Save"
-        @click="handleSave"
-      >
-        <i class="bi bi-save text-2xl"></i>
-      </button>
-      <button 
-        class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
         title="Share"
         @click="handleShare"
       >
@@ -63,7 +56,7 @@
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
         title="New Note"
-        @click="$emit('new-note')"
+        @click="handleNewNote"
       >
         <i class="bi bi-plus-square text-2xl"></i>
       </button>
@@ -74,6 +67,9 @@
 
 <script setup lang="ts">
 import { inject } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps<{
   noteTitle?: string;
@@ -98,12 +94,9 @@ const handleBack = async () => {
   // Then execute the injected back click handler
   onBackClick();
   // Finally navigate back
-  window.history.back();
+  router.push('/notes');
 }
 
-const handleSave = () => {
-  emit('save');
-};
 
 const handleShare = async () => {
   if (navigator.share) {
@@ -119,6 +112,10 @@ const handleShare = async () => {
     // Fallback for browsers that don't support the Web Share API
     alert('Sharing is not supported in your browser');
   }
+};
+
+const handleNewNote = () => {
+  router.push('/notes/new');
 };
 
 const handleFileSelect = (event: Event) => {
