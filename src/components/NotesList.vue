@@ -6,7 +6,6 @@
       <DateHeader :date="timeGroup" />
       <NoteGroup 
         :notes="notes" 
-        @deleteNote="handleDeleteNote"
       />
     </div>
   </div>
@@ -27,8 +26,6 @@ const props = defineProps({
     default: ''
   }
 });
-
-const emit = defineEmits(['deleteNote']);
 
 // Extract filtering logic to a separate computed property
 const filteredNotes = computed(() => 
@@ -88,8 +85,4 @@ const groupedNotes = computed(() => {
     Object.entries(groups).filter(([_, notes]) => notes.length > 0)
   );
 });
-
-const handleDeleteNote = (noteId) => {
-  emit('deleteNote', noteId);
-};
 </script> 

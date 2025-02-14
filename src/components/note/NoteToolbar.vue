@@ -58,7 +58,7 @@
         title="Checklist"
         @click="$emit('toggle-checklist')"
       >
-        <i class="bi bi-check2-square text-2xl"></i>
+        <i class="bi bi-list-check text-2xl"></i>
       </button>
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 

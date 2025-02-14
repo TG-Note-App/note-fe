@@ -5,7 +5,7 @@
     <div class="flex gap-3 h-full">
       <RouterLink :to="'/notes/' + props.id" class="flex-1 min-w-0">
         <div 
-          class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-blue-500/10 
+          class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-emerald-500/10 to-blue-500/10 
             opacity-0 group-hover:opacity-100 transition-opacity duration-500
             animate-gradient-x"
         />
@@ -38,19 +38,6 @@
           </div>
         </div>
       </RouterLink>
-
-      <div class="flex items-center flex-shrink-0">
-        <button 
-          @click.prevent="$emit('delete')" 
-          class="text-red-500 p-2 
-            bg-gray-800/80 hover:bg-gray-700/80 
-            rounded-full shadow-lg
-            transition-all duration-300 ease-in-out"
-          aria-label="Delete note"
-        >
-          <i class="bi bi-trash-fill text-xl"></i>
-        </button>
-      </div>
     </div>
   </div>
 </template>
@@ -74,12 +61,6 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const textPreview = ref(null)
-const truncatedText = computed(() => {
-  if (!props.text) return ''
-  return props.text
-})
-
-defineEmits(['delete']);
 
 onMounted(async () => {
   await nextTick()

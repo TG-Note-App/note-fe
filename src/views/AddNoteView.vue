@@ -12,7 +12,7 @@
               v-model="tempTitle"
               type="text"
               class="w-full px-4 py-3 bg-slate-700/50 text-white border border-slate-600 rounded-lg 
-                     focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                      placeholder-slate-400 transition-all duration-300"
               placeholder="Введите заголовок заметки"
               @keyup.enter="handleContinue"
@@ -21,9 +21,9 @@
           <div class="flex justify-center">
             <button
               @click="handleContinue"
-              class="px-8 py-4 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 
+              class="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
                      transform hover:scale-105 transition-all duration-300 
-                     font-medium shadow-lg hover:shadow-emerald-500/25 text-lg"
+                     font-medium shadow-lg hover:shadow-blue-500/25 text-lg"
             >
               Continue
             </button>

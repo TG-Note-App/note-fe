@@ -47,12 +47,12 @@ defineEmits(['update:modelValue']);
 
   @apply hover:bg-gray-700/50 
     hover:shadow-xl 
-    hover:shadow-blue-500/10 
-    hover:border-blue-500/30;
+    hover:shadow-emerald-500/10 
+    hover:border-emerald-500/30;
 
   @apply focus:outline-none 
     focus:ring-2 
-    focus:ring-blue-500/50;
+    focus:ring-emerald-500/50;
 }
 
 .search-icon {
@@ -66,7 +66,7 @@ defineEmits(['update:modelValue']);
     text-gray-400 
     transition-colors 
     duration-300 
-    group-hover:text-blue-400;
+    group-hover:text-emerald-400;
 }
 </style>
   

@@ -7,7 +7,6 @@
       :title="note.title"
       :text="note.text"
       :lastModified="note.lastModified"
-      @delete="$emit('deleteNote', note.id)"
     />
   </div>
 </template>
@@ -22,5 +21,4 @@ defineProps({
   }
 });
 
-defineEmits(['deleteNote']);
 </script> 
