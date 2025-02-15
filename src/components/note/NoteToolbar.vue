@@ -66,7 +66,7 @@
     <div 
       v-if="showSidePanel" 
       class="fixed top-12 right-4 w-64 bg-gray-800/95 backdrop-blur-xl shadow-2xl transform transition-all duration-200 ease-out rounded-xl border border-gray-700/30"
-      style="z-index: 1000;"
+      style="z-index: 1001;"
     >
       <div class="py-1">
         <button 
@@ -78,7 +78,7 @@
         <div class="h-[1px] bg-gray-700/30 mx-2"></div>
         <button 
           class="w-full text-left px-4 py-3 text-gray-300 transition-all duration-150 flex items-center group hover:bg-gray-700/50"
-          @click="$emit('delete-note')"
+          @click="showDeleteModal = true"
         >
           <i class="bi bi-trash mr-3 text-red-700 "></i>
           <span class="text-sm">Удалить заметку</span>
@@ -94,12 +94,21 @@
       @click="toggleSidePanel"
     ></div>
 
+    <!-- Delete Note Modal -->
+    <DeleteNoteModal
+      v-if="showDeleteModal"
+      @close="showDeleteModal = false"
+      @confirm="handleDeleteConfirm"
+      style="z-index: 1002;"
+    />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { inject, ref, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import DeleteNoteModal from '../DeleteNoteModal.vue'
 
 const router = useRouter()
 
@@ -128,6 +137,7 @@ const emit = defineEmits([
 const onBackClick = inject('onBackClick', () => {})
 
 const showSidePanel = ref(false);
+const showDeleteModal = ref(false);
 
 const handleBack = async () => {
   // First save the note
@@ -170,6 +180,12 @@ const handleFileSelect = (event: Event) => {
 
 const toggleSidePanel = () => {
   showSidePanel.value = !showSidePanel.value;
+};
+
+const handleDeleteConfirm = () => {
+  emit('delete-note');
+  showDeleteModal.value = false;
+  showSidePanel.value = false;
 };
 </script>
 
