@@ -28,16 +28,23 @@
     <div 
       class="group relative overflow-hidden rounded-xl p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-gray-700/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
     >
-      <!-- Add delete button -->
-      <button
-        @click.stop="handleDelete"
-        class="absolute right-0 top-0 h-full w-16
-          bg-gray-900/80
-          transition-all duration-300 z-10 flex items-center justify-center
-          opacity-100" 
-      >
-        <i class="bi bi-trash text-xl text-red-500"></i>  
-      </button>
+      <!-- Control buttons -->
+      <div class="absolute right-0 top-0 h-full flex">
+        <button
+          @click.stop="handlePin"
+          class="w-16 bg-gray-800/90 transition-all duration-300 z-10 flex items-center justify-center hover:bg-gray-700/90 border-l border-gray-600"
+        >
+          <i class="bi bi-pin text-xl text-blue-500"></i>  
+        </button>
+      </div>
+      <div class="absolute right-16 top-0 h-full flex">
+        <button
+          @click.stop="handleDelete" 
+          class="w-16 transition-all duration-300 z-10 flex items-center justify-center bg-red-900/80 hover:bg-red-800/80"
+        >
+          <i class="bi bi-trash text-xl text-red-500"></i>  
+        </button>
+      </div>
       
       <div class="flex gap-3 h-full">
         <RouterLink :to="'/notes/' + props.id" class="flex-1 min-w-0">
@@ -96,6 +103,10 @@ const props = defineProps({
   lastModified: {
     type: [Date, String, Number],
     required: true
+  },
+  isPinned: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -127,7 +138,7 @@ onMounted(async () => {
     if (textWidth > containerWidth) {
       const ratio = containerWidth / textWidth
       const charCount = Math.floor(originalText.length * ratio)
-      truncated = originalText.slice(0, charCount - 10) + '...'
+      truncated = originalText.slice(0, charCount - 20) + '...'
     }
     
     document.body.removeChild(span)
@@ -143,5 +154,10 @@ const handleDelete = (event) => {
 const confirmDelete = () => {
   store.deleteNote(props.id)
   showDeleteModal.value = false
+}
+
+const handlePin = (event) => {
+  event.preventDefault()
+  store.togglePinNote(props.id)
 }
 </script> 

@@ -8,10 +8,11 @@ export const useNotesStore = defineStore('notes', {
         title: 'Сегодняшняя заметка',
         text: 'Текст внутри заметкиewfjewjfiewjfiwejirjwejiewjrekwkrwekrjwekrjwelkrjlwejrlwejrwewkrewkrwkelrwk;;lrwellerjlwejr',
         lastModified: new Date('2025-02-13'),
+        isPinned: true,
       },
-      { id: 2, title: 'Вчерашняя заметка', text: 'Текст внутри заметки', lastModified: new Date('2025-02-12') },
-      { id: 3, title: 'Заметка 1', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20') },
-      { id: 4, title: 'Заметка 2', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20') }
+      { id: 2, title: 'Вчерашняя заметка', text: 'Текст внутри заметки', lastModified: new Date('2025-02-12'), isPinned: false },
+      { id: 3, title: 'Заметка 1', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20'), isPinned: false },
+      { id: 4, title: 'Заметка 2', text: 'Текст внутри заметки', lastModified: new Date('2025-01-20'), isPinned: false }
     ]
   }),
   getters: {
@@ -37,6 +38,12 @@ export const useNotesStore = defineStore('notes', {
     },
     deleteNote(noteId) {
       this.notes = this.notes.filter(note => note.id !== noteId)
+    },
+    togglePin(noteId) {
+      const note = this.notes.find(n => n.id === noteId);
+      if (note) {
+        note.isPinned = !note.isPinned;
+      }
     }
   }
 }) 

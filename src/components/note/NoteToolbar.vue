@@ -71,7 +71,6 @@
       <div class="py-1">
         <button 
           class="w-full text-left px-4 py-3 text-gray-300 hover:bg-gray-700/50 transition-all duration-150 flex items-center group"
-          @click="$emit('find-in-note')"
         >
           <i class="bi bi-search mr-3 text-gray-400 group-hover:text-blue-300"></i>
           <span class="text-sm">Find in Note</span>
@@ -82,7 +81,7 @@
           @click="$emit('delete-note')"
         >
           <i class="bi bi-trash mr-3 text-red-700 "></i>
-          <span class="text-sm">Delete Note</span>
+          <span class="text-sm">Удалить заметку</span>
         </button>
       </div>
     </div>
@@ -99,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject, ref, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -108,6 +107,7 @@ const props = defineProps<{
   noteTitle?: string;
   noteContent?: string;
   noteId?: number;
+  searchMatchCount?: number;
 }>();
 
 const emit = defineEmits([
@@ -119,7 +119,10 @@ const emit = defineEmits([
   'save',
   'file-selected',
   'find-in-note',
-  'delete-note'
+  'delete-note',
+  'search-closed',
+  'find-next',
+  'search-updated'
 ]);
 
 const onBackClick = inject('onBackClick', () => {})

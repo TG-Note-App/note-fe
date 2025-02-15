@@ -3,7 +3,7 @@
     <div v-for="(notes, timeGroup) in groupedNotes" :key="timeGroup" 
       class="space-y-4 first:animate-fadeIn"
     >
-      <DateHeader :date="timeGroup" />
+      <DateHeader :title="timeGroup" />
       <NoteGroup 
         :notes="notes" 
       />
@@ -57,6 +57,7 @@ const isWithinDays = (date, days) => {
 // Updated grouping logic
 const groupedNotes = computed(() => {
   const groups = {
+    'ЗАКРЕПЛЕНО': [],
     'СЕГОДНЯ': [],
     'ВЧЕРА': [],
     'Последние 7 дней': [],
@@ -66,8 +67,9 @@ const groupedNotes = computed(() => {
 
   filteredNotes.value.forEach(note => {
     const noteDate = new Date(note.lastModified);
-    
-    if (isToday(noteDate)) {
+    if (note.isPinned) {
+      groups['ЗАКРЕПЛЕНО'].push(note);
+    } else if (isToday(noteDate)) {
       groups['СЕГОДНЯ'].push(note);
     } else if (isYesterday(noteDate)) {
       groups['ВЧЕРА'].push(note);
