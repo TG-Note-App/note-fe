@@ -18,10 +18,10 @@
       </button>
       <button 
         class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
-        title="More"
-        @click="toggleSidePanel"
+        title="New Note"
+        @click="handleNewNote"
       >
-        <i class="bi bi-three-dots-vertical text-2xl"></i>
+        <i class="bi bi-plus-square text-2xl"></i>
       </button>
     </div>
     
@@ -53,37 +53,6 @@
       >
         <i class="bi bi-list-check text-2xl"></i>
       </button>
-      <button 
-        class="p-4 text-gray-300 hover:text-blue-300 transition-colors" 
-        title="New Note"
-        @click="handleNewNote"
-      >
-        <i class="bi bi-plus-square text-2xl"></i>
-      </button>
-    </div>
-
-    <!-- Add the side panel -->
-    <div 
-      v-if="showSidePanel" 
-      class="fixed top-12 right-4 w-64 bg-gray-800/95 backdrop-blur-xl shadow-2xl transform transition-all duration-200 ease-out rounded-xl border border-gray-700/30"
-      style="z-index: 1001;"
-    >
-      <div class="py-1">
-        <button 
-          class="w-full text-left px-4 py-3 text-gray-300 hover:bg-gray-700/50 transition-all duration-150 flex items-center group"
-        >
-          <i class="bi bi-search mr-3 text-gray-400 group-hover:text-blue-300"></i>
-          <span class="text-sm">Find in Note</span>
-        </button>
-        <div class="h-[1px] bg-gray-700/30 mx-2"></div>
-        <button 
-          class="w-full text-left px-4 py-3 text-gray-300 transition-all duration-150 flex items-center group hover:bg-gray-700/50"
-          @click="showDeleteModal = true"
-        >
-          <i class="bi bi-trash mr-3 text-red-700 "></i>
-          <span class="text-sm">Удалить заметку</span>
-        </button>
-      </div>
     </div>
 
     <!-- Add overlay to close panel when clicking outside -->
@@ -93,20 +62,11 @@
       style="z-index: 999;"
       @click="toggleSidePanel"
     ></div>
-
-    <!-- Delete Note Modal -->
-    <DeleteNoteModal
-      v-if="showDeleteModal"
-      @close="showDeleteModal = false"
-      @confirm="handleDeleteConfirm"
-      style="z-index: 1002;"
-    />
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, ref, nextTick, watch } from 'vue'
+import { inject, ref } from '@vue/runtime-dom'
 import { useRouter } from 'vue-router'
 import DeleteNoteModal from '../DeleteNoteModal.vue'
 
@@ -120,7 +80,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits([
-  'more', 
   'add-attachment', 
   'format', 
   'toggle-checklist', 

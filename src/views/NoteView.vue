@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, watch, computed } from '@vue/runtime-dom'
 import { useRoute , useRouter} from 'vue-router'
 import { useNotesStore } from '../stores/notesStore'
 import NoteToolbar from '../components/note/NoteToolbar.vue'
@@ -59,7 +59,3 @@ watch(noteRef, (newValue) => {
 }, { deep: true })
 
 </script>
-
-<style>
-/* Move to global styles or separate style file */
-</style> 
