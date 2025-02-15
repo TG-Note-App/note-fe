@@ -1,96 +1,53 @@
 <template>
   <div>
-    <!-- Add modal -->
-    <div v-if="showDeleteModal" 
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-      @click="showDeleteModal = false"
-    >
-      <div class="bg-gray-800 p-6 rounded-xl flex flex-col items-center gap-4" @click.stop>
-        <img src="../assets/delete-note.png" alt="Duck" class="w-52 h-52 drop-shadow-2xl" />
-        <p class="text-white text-xl">Вы уверены что хотите удалить заметку?</p>
-        <div class="flex gap-4">
-          <button 
-            @click="confirmDelete" 
-            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
-          >
-            Да
-          </button>
-          <button 
-            @click="showDeleteModal = false" 
-            class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-          >
-            Нет
-          </button>
-        </div>
-      </div>
-    </div>
+    <DeleteNoteModal
+      v-if="showDeleteModal"
+      @close="showDeleteModal = false"
+      @confirm="confirmDelete"
+    />
 
     <div 
       class="group relative overflow-hidden rounded-xl p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-gray-700/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
     >
-      <!-- Control buttons -->
       <div class="absolute right-0 top-0 h-full flex">
-        <button
-          @click.stop="handlePin"
-          class="w-16 bg-gray-800/90 transition-all duration-300 z-10 flex items-center justify-center hover:bg-gray-700/90 border-l border-gray-600"
+        <ActionButton
+          @click="handlePin"
+          class="bg-gray-800/90 hover:bg-gray-700/90 border-l border-gray-600"
         >
-          <i class="bi bi-pin text-xl text-blue-500"></i>  
-        </button>
-      </div>
-      <div class="absolute right-16 top-0 h-full flex">
-        <button
-          @click.stop="handleDelete" 
-          class="w-16 transition-all duration-300 z-10 flex items-center justify-center bg-red-900/80 hover:bg-red-800/80"
+          <i class="bi bi-pin text-xl text-blue-500"></i>
+        </ActionButton>
+        <ActionButton
+          @click="handleDelete"
+          class="bg-red-900/80 hover:bg-red-800/80"
         >
-          <i class="bi bi-trash text-xl text-red-500"></i>  
-        </button>
+          <i class="bi bi-trash text-xl text-red-500"></i>
+        </ActionButton>
       </div>
       
-      <div class="flex gap-3 h-full">
-        <RouterLink :to="'/notes/' + props.id" class="flex-1 min-w-0">
-          <div 
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-emerald-500/10 to-blue-500/10 
-              opacity-0 group-hover:opacity-100 transition-opacity duration-500
-              animate-gradient-x"
-          />
-          
-          <!-- Content container -->
-          <div class="relative">
-            <h4 
-              class="mb-2 flex items-center text-xl font-medium text-white
-                group-hover:text-blue-200 transition-colors duration-300"
-            >
-              {{ props.title }}
-            </h4>
-            
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="text-gray-500 flex-shrink-0">
-                {{ new Date(props.lastModified).toLocaleDateString('ru-RU', {
-                  day: '2-digit',
-                  month: '2-digit', 
-                  year: 'numeric'
-                }) }}
-              </span>
-
-              <p 
-                ref="textPreview"
-                class="flex-1 min-w-0 line-clamp-1 leading-relaxed text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis
-                  group-hover:text-gray-300 transition-colors duration-300"
-              >
-                {{ props.text }}
-              </p>
-            </div>
+      <RouterLink :to="`/notes/${props.id}`" class="flex-1 min-w-0" @click.stop>
+        <div class="hover-gradient-overlay" />
+        <div class="relative">
+          <h4 class="note-title">{{ props.title }}</h4>
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-gray-500 flex-shrink-0">
+              {{ formatDate(props.lastModified) }}
+            </span>
+            <p ref="textPreview" class="note-preview">
+              {{ truncatedText }}
+            </p>
           </div>
-        </RouterLink>
-      </div>
+        </div>
+      </RouterLink>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useNotesStore } from '../stores/notesStore'
+import DeleteNoteModal from './DeleteNoteModal.vue'
+import ActionButton from './ActionButton.vue'
 
 const props = defineProps({
   id: {
@@ -110,44 +67,27 @@ const props = defineProps({
   }
 })
 
-const textPreview = ref(null)
 const store = useNotesStore()
-const emit = defineEmits(['delete'])
-
 const showDeleteModal = ref(false)
 
-onMounted(async () => {
-  await nextTick()
-  if (textPreview.value) {
-    const element = textPreview.value
-    const originalText = props.text
-    let truncated = originalText
-    
-    // Create temporary span to measure text width
-    const span = document.createElement('span')
-    span.style.visibility = 'hidden'
-    span.style.position = 'absolute'
-    span.style.whiteSpace = 'nowrap'
-    span.style.font = window.getComputedStyle(element).font
-    document.body.appendChild(span)
-    
-    span.textContent = originalText
-    const textWidth = span.offsetWidth
-    const containerWidth = element.offsetWidth
-
-    if (textWidth > containerWidth) {
-      const ratio = containerWidth / textWidth
-      const charCount = Math.floor(originalText.length * ratio)
-      truncated = originalText.slice(0, charCount - 20) + '...'
-    }
-    
-    document.body.removeChild(span)
-    element.textContent = truncated
-  }
+const truncatedText = computed(() => {
+  if (!props.text) return ''
+  return props.text.length > 50 ? props.text.slice(0, 50) + '...' : props.text
 })
 
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
 const handleDelete = (event) => {
-  event.preventDefault()
+  if (event) {  // Check if event exists
+    event.preventDefault()
+    event.stopPropagation()
+  }
   showDeleteModal.value = true
 }
 
@@ -156,8 +96,26 @@ const confirmDelete = () => {
   showDeleteModal.value = false
 }
 
-const handlePin = (event) => {
-  event.preventDefault()
-  store.togglePinNote(props.id)
+const handlePin = () => {
+  store.togglePin(props.id)
 }
-</script> 
+</script>
+
+<style scoped>
+.hover-gradient-overlay {
+  @apply absolute inset-0 bg-gradient-to-r from-blue-500/10 via-emerald-500/10 to-blue-500/10 
+    opacity-0 group-hover:opacity-100 transition-opacity duration-500
+    animate-gradient;
+}
+
+.note-title {
+  @apply mb-2 flex items-center text-xl font-medium text-white
+    group-hover:text-blue-200 transition-colors duration-300;
+}
+
+.note-preview {
+  @apply flex-1 min-w-0 line-clamp-1 leading-relaxed text-gray-400 
+    whitespace-nowrap overflow-hidden text-ellipsis
+    group-hover:text-gray-300 transition-colors duration-300;
+}
+</style> 
