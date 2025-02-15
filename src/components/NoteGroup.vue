@@ -7,6 +7,7 @@
       :title="note.title"
       :text="note.text"
       :lastModified="note.lastModified"
+      :isPinned="note.isPinned"
     />
   </div>
 </template>

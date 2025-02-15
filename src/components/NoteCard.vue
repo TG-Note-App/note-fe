@@ -12,9 +12,9 @@
       <div class="absolute right-0 top-0 h-full flex">
         <ActionButton
           @click="handlePin"
-          class="bg-gray-800/90 hover:bg-gray-700/90 border-l border-gray-600"
+          class="bg-blue-700/20 hover:bg-blue-700/50 border-l"
         >
-          <i class="bi bi-pin text-xl text-blue-500"></i>
+          <i class="bi text-xl text-blue-500" :class="{ 'bi-pin-fill': props.isPinned, 'bi-pin': !props.isPinned }"></i>
         </ActionButton>
         <ActionButton
           @click="handleDelete"
@@ -49,16 +49,24 @@ import { useNotesStore } from '../stores/notesStore'
 import DeleteNoteModal from './DeleteNoteModal.vue'
 import ActionButton from './ActionButton.vue'
 
+const notesStore = useNotesStore()
+const showDeleteModal = ref(false)
+
 const props = defineProps({
   id: {
-    type: [String, Number],
-    required: true,
-    default: 1
+    type: Number,
+    required: true
   },
-  title: String,
-  text: String,
+  title: {
+    type: String,
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  },
   lastModified: {
-    type: [Date, String, Number],
+    type: Date,
     required: true
   },
   isPinned: {
@@ -66,9 +74,6 @@ const props = defineProps({
     default: false
   }
 })
-
-const store = useNotesStore()
-const showDeleteModal = ref(false)
 
 const truncatedText = computed(() => {
   if (!props.text) return ''
@@ -92,12 +97,16 @@ const handleDelete = (event) => {
 }
 
 const confirmDelete = () => {
-  store.deleteNote(props.id)
+  notesStore.deleteNote(props.id)
   showDeleteModal.value = false
 }
 
-const handlePin = () => {
-  store.togglePin(props.id)
+const handlePin = (event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+  notesStore.togglePin(props.id)
 }
 </script>
 

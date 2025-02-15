@@ -40,9 +40,9 @@ export const useNotesStore = defineStore('notes', {
       this.notes = this.notes.filter(note => note.id !== noteId)
     },
     togglePin(noteId) {
-      const note = this.notes.find(n => n.id === noteId);
+      const note = this.notes.find(note => note.id === noteId)
       if (note) {
-        note.isPinned = !note.isPinned;
+        note.isPinned = !note.isPinned
       }
     }
   }
