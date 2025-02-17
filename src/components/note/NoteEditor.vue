@@ -1,5 +1,10 @@
 <template>
-  <div class="flex-1 overflow-y-auto px-8 py-6">
+  <div class="flex-1 overflow-y-auto px-8 py-6 relative">
+    <!-- Add save status indicator -->
+    <div class="absolute top-4 right-4 text-sm text-gray-500">
+      {{ saveStatus }}
+    </div>
+    
     <input
       :value="title"
       @input="handleTitleInput"
@@ -16,6 +21,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
+import debounce from 'lodash/debounce'
+
 defineProps<{
   title: string
   content: string
@@ -26,13 +34,27 @@ const emit = defineEmits<{
   'update:content': [value: string]
 }>()
 
-const handleTitleInput = (e: Event) => {
-  emit('update:title', (e.target as HTMLInputElement).value)
+const saveStatus = ref('')
+
+const updateSaveStatus = () => {
+  saveStatus.value = 'Saving...'
+  setTimeout(() => {
+    saveStatus.value = 'Saved'
+    setTimeout(() => {
+      saveStatus.value = ''
+    }, 2000)
+  }, 500)
 }
 
-const handleContentInput = (e: Event) => {
+const handleTitleInput = debounce((e: Event) => {
+  emit('update:title', (e.target as HTMLInputElement).value)
+  updateSaveStatus()
+}, 300)
+
+const handleContentInput = debounce((e: Event) => {
   emit('update:content', (e.target as HTMLTextAreaElement).value)
-}
+  updateSaveStatus()
+}, 300)
 </script>
 
 <script lang="ts">

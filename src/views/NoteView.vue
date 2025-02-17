@@ -27,7 +27,6 @@ import type { Note } from '../types/note'
 const route = useRoute()
 const router = useRouter()
 const notesStore = useNotesStore()
-console.log(notesStore)
 
 // Get note ID from URL
 const noteId = parseInt(route.params.id as string)
