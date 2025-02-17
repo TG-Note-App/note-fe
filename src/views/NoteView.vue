@@ -4,6 +4,7 @@
       <NoteToolbar
           :note-id="noteRef.id ? Number(noteRef.id) : undefined"
           @delete-note="handleDeleteNote"
+          :isNewNotePage="false"
         />
       <NoteEditor
         v-model:title="noteRef.title"

@@ -3,6 +3,7 @@ export interface NoteToolbarProps {
   noteContent?: string
   noteId?: number
   searchMatchCount?: number
+  isNewNotePage?: boolean
 }
 
 export interface ActionButton {

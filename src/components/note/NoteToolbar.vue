@@ -92,16 +92,18 @@ const actionButtons = computed<ActionButton[]>(() => [
     handler: shareNote
   },
   {
-    title: 'New Note',
-    icon: 'bi-plus-square',
-    handler: handleNewNote
-  },
-  {
     title: 'Add Attachment',
     icon: 'bi-paperclip',
     handler: () => fileInputRef.value?.click()
   }
 ])
+if (!props.isNewNotePage) {
+  actionButtons.value.push({
+    title: 'New Note',
+    icon: 'bi-plus-square',
+    handler: handleNewNote
+  })
+}
 
 // Add file input ref
 const fileInputRef = ref<HTMLInputElement | null>(null)

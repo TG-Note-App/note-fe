@@ -35,6 +35,7 @@
         <NoteToolbar
           :note-id="noteRef.id ? Number(noteRef.id) : undefined"
           @delete-note="handleDeleteNote"
+          :isNewNotePage="true"
         />
         <NoteEditor
           v-model:title="noteRef.title"
@@ -45,8 +46,8 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, watch, computed, provide } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { ref, provide } from 'vue'
+  import { useRouter } from 'vue-router'
   import { useNotesStore } from '../stores/notesStore'
   import NoteEditor from '../components/note/NoteEditor.vue'
   import NoteToolbar from '../components/note/NoteToolbar.vue'
