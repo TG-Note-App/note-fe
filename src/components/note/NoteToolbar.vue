@@ -56,7 +56,6 @@ const emit = defineEmits([
 
 const onBackClick = inject('onBackClick', () => {})
 const showSidePanel = ref(false)
-const showDeleteModal = ref(false)
 
 // Extracted sharing logic
 const shareNote = async () => {
@@ -119,12 +118,6 @@ const handleFileSelect = (event: Event) => {
 
 const toggleSidePanel = () => {
   showSidePanel.value = !showSidePanel.value;
-};
-
-const handleDeleteConfirm = () => {
-  emit('delete-note');
-  showDeleteModal.value = false;
-  showSidePanel.value = false;
 };
 </script>
 

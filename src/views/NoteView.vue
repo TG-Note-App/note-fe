@@ -5,6 +5,8 @@
           :note-id="noteRef.id ? Number(noteRef.id) : undefined"
           @delete-note="handleDeleteNote"
           :isNewNotePage="false"
+          :noteTitle="noteRef.title"
+          :noteContent="noteRef.text"
         />
       <NoteEditor
         v-model:title="noteRef.title"
