@@ -1,14 +1,14 @@
 <template>
-  <div class="flex justify-between items-center text-white pt-12 pb-6">
+  <div class="flex justify-between items-center text-white pt-8 sm:pt-12">
     <h2 
-      class="text-5xl font-bold tracking-wider hover:text-gray-300 transition-all duration-300 
+      class="text-3xl sm:text-5xl font-bold tracking-wider hover:text-gray-300 transition-all duration-300 
         bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent 
         transform cursor-default"
     >
       Заметки
     </h2>
     <button 
-      class="w-14 h-14 rounded-full 
+      class="w-10 h-10 sm:w-14 sm:h-14 rounded-full 
         bg-gradient-to-r from-gray-700 to-gray-800 
         hover:from-gray-600 hover:to-gray-700 
         transition-all duration-300 shadow-lg 
@@ -17,7 +17,7 @@
         hover:shadow-xl hover:shadow-gray-700/30"
       @click="$emit('new-note')"
     >
-      <i class="bi bi-plus-lg text-2xl"></i>
+      <i class="bi bi-plus-lg text-xl sm:text-2xl"></i>
     </button>
   </div>
 </template>
