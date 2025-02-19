@@ -27,7 +27,6 @@ defineEmits(['update:modelValue']);
 <style scoped>
 .search-container {
   @apply mt-5 sm:mt-10 relative w-full max-w-4xl mx-auto px-2 mb-5 sm:px-0;
-  min-width: min(50vw, 100%);
 }
 
 .search-input {

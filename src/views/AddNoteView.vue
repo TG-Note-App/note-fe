@@ -1,36 +1,5 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-      <!-- Add modal overlay -->
-      <div v-if="showTitleModal" 
-           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-           @click="showTitleModal = false">
-        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg p-8 max-w-md w-full mx-4 shadow-2xl border border-slate-700"
-             @click.stop>
-          <div class="flex flex-col items-center mb-8">
-            <img src="../assets/duck-icon.png" alt="Duck" class="w-52 h-52 mb-6 drop-shadow-2xl hover:scale-105 transition-transform duration-300" />
-            <input
-              v-model="tempTitle"
-              type="text"
-              class="w-full px-4 py-3 bg-slate-700/50 text-white border border-slate-600 rounded-lg 
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                     placeholder-slate-400 transition-all duration-300"
-              placeholder="Введите заголовок заметки"
-              @keyup.enter="handleContinue"
-            />
-          </div>
-          <div class="flex justify-center">
-            <button
-              @click="handleContinue"
-              class="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
-                     transform hover:scale-105 transition-all duration-300 
-                     font-medium shadow-lg hover:shadow-blue-500/25 text-lg"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div class="max-w-4xl mx-auto h-screen flex flex-col">
         <NoteToolbar
           :note-id="noteRef.id ? Number(noteRef.id) : undefined"
@@ -63,15 +32,6 @@
     lastModified: new Date()
   })
 
-  const showTitleModal = ref(true)
-  const tempTitle = ref('')
-
-  const handleContinue = () => {
-    if (tempTitle.value.trim()) {
-      noteRef.value.title = tempTitle.value
-      showTitleModal.value = false
-    }
-  }
 
   // Add save functionality
   const saveNote = () => {

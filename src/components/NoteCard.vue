@@ -29,7 +29,7 @@
         <div class="relative">
           <h4 class="note-title text-base md:text-xl">{{ props.title }}</h4>
           <div class="flex flex-row items-center gap-2 sm:gap-3 min-w-0">
-            <span class="text-gray-500 flex-shrink-0 text-[12px] sm:text-sm whitespace-nowrap">
+            <span class="text-gray-500 flex-shrink-0 text-[14px] sm:text-sm whitespace-nowrap">
               {{ formatDate(props.lastModified) }}
             </span>
             <p ref="textPreview" class="note-preview text-sm sm:text-base">
