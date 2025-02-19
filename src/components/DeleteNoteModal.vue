@@ -18,15 +18,29 @@
       <div class="flex gap-4 sm:gap-6 mt-2">
         <button 
           @click="$emit('confirm')" 
-          class="px-6 sm:px-8 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl font-medium shadow-lg hover:shadow-red-500/30 transition-all duration-300"
+          class="relative px-6 sm:px-8 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl font-semibold shadow-lg 
+          hover:shadow-red-500/50 active:shadow-red-500/30 transition-all duration-300 
+          before:absolute before:inset-0 before:bg-gradient-to-r before:from-red-600 before:to-pink-600 
+          before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity 
+          overflow-hidden group"
         >
-          Да
+          <span class="relative z-10 flex items-center gap-2">
+            <i class="bi bi-trash3-fill text-xl group-hover:rotate-12 transition-transform"></i>
+            Да
+          </span>
         </button>
         <button 
           @click="$emit('close')" 
-          class="px-6 sm:px-8 py-2.5 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl font-medium shadow-lg hover:shadow-gray-500/30 transition-all duration-300"
+          class="relative px-6 sm:px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold shadow-lg 
+          hover:shadow-gray-500/50 active:shadow-gray-500/30 transition-all duration-300
+          before:absolute before:inset-0 before:bg-gradient-to-r before:from-gray-700 before:to-gray-800 
+          before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity
+          overflow-hidden group"
         >
-          Нет
+          <span class="relative z-10 flex items-center gap-2">
+            <i class="bi bi-arrow-left text-xl group-hover:-translate-x-1 transition-transform"></i>
+            Нет
+          </span>
         </button>
       </div>
     </div>
@@ -34,6 +48,8 @@
 </template>
 
 <style scoped>
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
