@@ -1,7 +1,7 @@
 <template>
-  <div class="mt-10 space-y-8">
+  <div class="mt-4 sm:mt-10 space-y-6 sm:space-y-8">
     <div v-for="(notes, timeGroup) in groupedNotes" :key="timeGroup" 
-      class="space-y-4 first:animate-fadeIn"
+      class="space-y-1 sm:space-y-4 first:animate-fadeIn"
     >
       <DateHeader :title="timeGroup" />
       <NoteGroup 

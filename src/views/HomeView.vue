@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-    <div class="max-w-4xl mx-auto px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-8 pb-16">
       <AppHeader @new-note="handleNewNote" />
       <SearchBar v-model="search"/>
       <NotesList 

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div class="px-2 sm:px-0 space-y-2 sm:space-y-4">
     <NoteCard
       v-for="note in notes" 
       :key="note.id"

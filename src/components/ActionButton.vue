@@ -1,6 +1,6 @@
 <template>
   <button
-    class="w-16 transition-all duration-300 z-10 flex items-center justify-center"
+    class="w-12 sm:w-14 md:w-16 transition-all duration-300 z-10 flex items-center justify-center"
     @click="handleClick"
   >
     <slot></slot>

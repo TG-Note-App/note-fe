@@ -26,17 +26,23 @@ defineEmits(['update:modelValue']);
 
 <style scoped>
 .search-container {
-  @apply mt-10 relative;
+  @apply mt-5 sm:mt-10 relative w-full max-w-4xl mx-auto px-4 sm:px-0;
 }
 
 .search-input {
   @apply w-full 
     bg-gray-800/50 
     text-white 
-    pl-12 
-    pr-6 
-    py-4 
-    rounded-xl 
+    pl-10 
+    sm:pl-12 
+    pr-4 
+    sm:pr-6 
+    py-3 
+    sm:py-4 
+    text-sm 
+    sm:text-base 
+    rounded-lg 
+    sm:rounded-xl 
     border 
     border-gray-700/30
     backdrop-blur-sm 
@@ -56,17 +62,26 @@ defineEmits(['update:modelValue']);
 }
 
 .search-icon {
-  @apply h-5 
-    w-5 
+  @apply h-4 
+    sm:h-5 
+    w-4 
+    sm:w-5 
     absolute 
-    left-4 
-    top-1/2 
-    transform 
-    -translate-y-1/2 
+    left-6
+    sm:left-3
+    top-[50%] 
+    -translate-y-[50%] 
     text-gray-400 
     transition-colors 
     duration-300 
-    group-hover:text-emerald-400;
+    group-hover:text-emerald-400
+    flex
+    items-center
+    justify-center;
+
+  /* Ensure icon is rendered straight */
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 </style>
   

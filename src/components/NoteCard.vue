@@ -7,32 +7,32 @@
     />
 
     <div 
-      class="group relative overflow-hidden rounded-xl p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-indigo-950/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
+      class="group relative overflow-hidden rounded-xl p-2 sm:p-4 md:p-6 cursor-pointer bg-gray-800/40 backdrop-blur-sm hover:bg-indigo-950/50 hover:border-blue-500/30 hover:-translate-y-1 border border-gray-700/50 shadow-lg hover:shadow-xl transform transition-all duration-500 motion-safe:animate-fadeIn"
     >
       <div class="absolute right-0 top-0 h-full flex">
         <ActionButton
           @click="handlePin"
           class="bg-blue-700/20 hover:bg-blue-700/50 border-l"
         >
-          <i class="bi text-xl text-blue-500" :class="{ 'bi-pin-fill': props.isPinned, 'bi-pin': !props.isPinned }"></i>
+          <i class="bi text-base sm:text-lg md:text-xl text-blue-500" :class="{ 'bi-pin-fill': props.isPinned, 'bi-pin': !props.isPinned }"></i>
         </ActionButton>
         <ActionButton
           @click="handleDelete"
           class="bg-red-900/80 hover:bg-red-800/80"
         >
-          <i class="bi bi-trash text-xl text-red-500"></i>
+          <i class="bi bi-trash text-base sm:text-lg md:text-xl text-red-500"></i>
         </ActionButton>
       </div>
       
       <RouterLink :to="`/notes/${props.id}`" class="flex-1 min-w-0" @click.stop>
         <div class="hover-gradient-overlay" />
         <div class="relative">
-          <h4 class="note-title">{{ props.title }}</h4>
-          <div class="flex items-center gap-3 min-w-0">
-            <span class="text-gray-500 flex-shrink-0">
+          <h4 class="note-title text-base md:text-xl">{{ props.title }}</h4>
+          <div class="flex flex-row items-center gap-2 sm:gap-3 min-w-0">
+            <span class="text-gray-500 flex-shrink-0 text-[12px] sm:text-sm whitespace-nowrap">
               {{ formatDate(props.lastModified) }}
             </span>
-            <p ref="textPreview" class="note-preview">
+            <p ref="textPreview" class="note-preview text-sm sm:text-base">
               {{ truncatedText }}
             </p>
           </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useNotesStore } from '../stores/notesStore'
 import DeleteNoteModal from './DeleteNoteModal.vue'
@@ -75,10 +75,93 @@ const props = defineProps({
   }
 })
 
-const truncatedText = computed(() => {
-  if (!props.text) return ''
-  return props.text.length > 50 ? props.text.slice(0, 50) + '...' : props.text
+const textPreview = ref(null)
+const truncatedContent = ref('')
+let resizeObserver = null
+
+// Watch for changes in props.text and container size
+const updateTruncatedText = () => {
+  if (!props.text) {
+    truncatedContent.value = ''
+    return
+  }
+  
+  const text = props.text.trim()
+  
+  if (!textPreview.value) {
+    truncatedContent.value = text
+    return
+  }
+  
+  // Force a reflow to ensure correct measurements
+  textPreview.value.offsetHeight
+
+  const container = textPreview.value
+  const containerWidth = container.offsetWidth
+  
+  // Calculate buttons width
+  const buttons = container.closest('.group').querySelector('.absolute')
+  const buttonsWidth = buttons ? buttons.offsetWidth : 0
+  
+  // Create a temporary span to measure text
+  const span = document.createElement('span')
+  span.style.visibility = 'hidden'
+  span.style.whiteSpace = 'nowrap'
+  span.style.position = 'absolute'
+  span.style.fontSize = window.getComputedStyle(container).fontSize
+  span.textContent = text
+  document.body.appendChild(span)
+  
+  const textWidth = span.offsetWidth
+  document.body.removeChild(span)
+
+  // Use available width (container width minus buttons width)
+  const availableWidth = containerWidth - buttonsWidth
+  
+  if (textWidth > availableWidth) {
+    // Calculate approximate char count that will fit
+    const approxChars = Math.floor((availableWidth / textWidth) * text.length)
+    const lastSpace = text.lastIndexOf(' ', approxChars)
+    
+    truncatedContent.value = lastSpace !== -1 
+      ? text.slice(0, lastSpace) + '... '
+      : text.slice(0, approxChars) + '... '
+  } else {
+    truncatedContent.value = text
+  }
+}
+
+// Watch for text changes with immediate option
+watch(() => props.text, updateTruncatedText, { immediate: true })
+
+onMounted(() => {
+  // Initial update
+  updateTruncatedText()
+  
+  // Set up resize observer
+  resizeObserver = new ResizeObserver(() => {
+    requestAnimationFrame(updateTruncatedText)
+  })
+  
+  if (textPreview.value) {
+    resizeObserver.observe(textPreview.value)
+    // Also observe the parent container for layout changes
+    if (textPreview.value.parentElement) {
+      resizeObserver.observe(textPreview.value.parentElement)
+    }
+  }
 })
+
+onUnmounted(() => {
+  // Clean up resize observer
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
+})
+
+// Replace the computed property with the ref
+const truncatedText = computed(() => truncatedContent.value)
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString('ru-RU', {
@@ -118,7 +201,7 @@ const handlePin = (event) => {
 }
 
 .note-title {
-  @apply mb-2 flex items-center text-xl font-medium text-white
+  @apply mb-2 flex items-center font-medium text-white
     group-hover:text-blue-200 transition-colors duration-300;
 }
 
