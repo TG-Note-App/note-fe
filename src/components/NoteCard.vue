@@ -27,7 +27,7 @@
       <RouterLink :to="`/notes/${props.id}`" class="flex-1 min-w-0" @click.stop>
         <div class="hover-gradient-overlay" />
         <div class="relative">
-          <h4 class="note-title text-base md:text-xl">{{ props.title }}</h4>
+          <h4 class="note-title text-base md:text-xl">{{ truncatedTitle }}</h4>
           <div class="flex flex-row items-center gap-2 sm:gap-3 min-w-0">
             <span class="text-gray-500 flex-shrink-0 text-[14px] sm:text-sm whitespace-nowrap">
               {{ formatDate(props.lastModified) }}
@@ -77,6 +77,7 @@ const props = defineProps({
 
 const textPreview = ref(null)
 const truncatedContent = ref('')
+const truncatedTitleContent = ref('')
 let resizeObserver = null
 
 // Watch for changes in props.text and container size
@@ -134,34 +135,59 @@ const updateTruncatedText = () => {
 // Watch for text changes with immediate option
 watch(() => props.text, updateTruncatedText, { immediate: true })
 
-onMounted(() => {
-  // Initial update
-  updateTruncatedText()
-  
-  // Set up resize observer
-  resizeObserver = new ResizeObserver(() => {
-    requestAnimationFrame(updateTruncatedText)
-  })
-  
-  if (textPreview.value) {
-    resizeObserver.observe(textPreview.value)
-    // Also observe the parent container for layout changes
-    if (textPreview.value.parentElement) {
-      resizeObserver.observe(textPreview.value.parentElement)
-    }
+const updateTruncatedTitle = () => {
+  if (!props.title) {
+    truncatedTitleContent.value = ''
+    return
   }
-})
-
-onUnmounted(() => {
-  // Clean up resize observer
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+  
+  const title = props.title.trim()
+  
+  if (!textPreview.value) {
+    truncatedTitleContent.value = title
+    return
   }
-})
+  
+  const container = textPreview.value.closest('.group')
+  const containerWidth = container.offsetWidth
+  
+  // Calculate buttons width
+  const buttons = container.querySelector('.absolute')
+  const buttonsWidth = buttons ? buttons.offsetWidth : 0
+  
+  // Create a temporary span to measure text
+  const span = document.createElement('span')
+  span.style.visibility = 'hidden'
+  span.style.whiteSpace = 'nowrap'
+  span.style.position = 'absolute'
+  span.style.fontSize = window.getComputedStyle(container.querySelector('.note-title')).fontSize
+  span.textContent = title
+  document.body.appendChild(span)
+  
+  const titleWidth = span.offsetWidth
+  document.body.removeChild(span)
 
-// Replace the computed property with the ref
+  // Use available width (container width minus buttons width and some padding)
+  const availableWidth = containerWidth - buttonsWidth - 32 // 32px for padding
+  
+  if (titleWidth > availableWidth) {
+    // Calculate approximate char count that will fit
+    const approxChars = Math.floor((availableWidth / titleWidth) * title.length)
+    const lastSpace = title.lastIndexOf(' ', approxChars)
+    
+    truncatedTitleContent.value = lastSpace !== -1 
+      ? title.slice(0, lastSpace) + '...'
+      : title.slice(0, approxChars) + '...'
+  } else {
+    truncatedTitleContent.value = title
+  }
+}
+
+// Watch for title changes
+watch(() => props.title, updateTruncatedTitle, { immediate: true })
+
 const truncatedText = computed(() => truncatedContent.value)
+const truncatedTitle = computed(() => truncatedTitleContent.value)
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString('ru-RU', {
@@ -191,6 +217,36 @@ const handlePin = (event) => {
   }
   notesStore.togglePin(props.id)
 }
+
+onMounted(() => {
+  // Update both text and title
+  updateTruncatedText()
+  updateTruncatedTitle()
+  
+  // Set up resize observer
+  resizeObserver = new ResizeObserver(() => {
+    requestAnimationFrame(() => {
+      updateTruncatedText()
+      updateTruncatedTitle()
+    })
+  })
+  
+  if (textPreview.value) {
+    resizeObserver.observe(textPreview.value)
+    // Also observe the parent container for layout changes
+    if (textPreview.value.parentElement) {
+      resizeObserver.observe(textPreview.value.parentElement)
+    }
+  }
+})
+
+onUnmounted(() => {
+  // Clean up resize observer
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
+})
 </script>
 
 <style scoped>

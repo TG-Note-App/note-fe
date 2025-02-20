@@ -1,10 +1,9 @@
 <template>
   <div class="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
-    <div class="flex flex-col gap-2 mb-10">
+    <div class="flex flex-col gap-2 mb-3">
       <textarea
         :value="title"
         @input="handleTitleInput"
-        rows="1"
         class="text-2xl sm:text-3xl font-medium w-full outline-none bg-transparent text-white placeholder-gray-500 resize-none overflow-hidden"
         placeholder="Title"
         ref="titleInput"
