@@ -107,6 +107,11 @@ const actionButtons = computed<ActionButton[]>(() => [
     handler: shareNote
   },
   {
+    title: 'Delete',
+    icon: 'bi-trash',
+    handler: () => emit('delete-note')
+  },
+  {
     title: 'Add Attachment',
     icon: 'bi-paperclip',
     handler: () => fileInputRef.value?.click()
