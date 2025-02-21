@@ -6,11 +6,11 @@
           @delete-note="handleDeleteNote"
           :isNewNotePage="false"
           :noteTitle="noteRef.title"
-          :noteContent="noteRef.text"
+          :noteContent="noteRef.content"
         />
       <NoteEditor
         v-model:title="noteRef.title"
-        v-model:content="noteRef.text"
+        v-model:content="noteRef.content"
       />
     </div>
   </div>
@@ -35,7 +35,7 @@ const note = computed(() => notesStore.notes.find(note => note.id === noteId))
 const noteRef = ref<Note>({
   id: note.value?.id?.toString() ?? null,
   title: note.value?.title ?? '',
-  text: note.value?.text ?? '',
+  content: note.value?.content ?? '',
   lastModified: new Date()
 })
 
@@ -54,7 +54,7 @@ watch(noteRef, (newValue) => {
     notesStore.updateNote({
       ...note.value,
       title: newValue.title,
-      text: newValue.text,
+      content: newValue.content,
       lastModified: new Date()
     })
   }

@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useNotesStore } from '../stores/notesStore';
@@ -26,6 +26,10 @@ const notesStore = useNotesStore();
 const search = ref('');
 
 const filteredNotes = computed(() => notesStore.filteredNotes(search.value));
+
+onMounted(() => {
+  notesStore.fetchNotes();
+});
 
 const handleNewNote = () => {
   router.push('/notes/new');

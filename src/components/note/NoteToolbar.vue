@@ -42,12 +42,23 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref, computed } from 'vue'
+import { inject, ref, computed, withDefaults } from 'vue'
 import { useRouter } from 'vue-router'
 import type { NoteToolbarProps, ActionButton } from '../../types/types' // You'll need to create this
 
 const router = useRouter()
-const props = defineProps<NoteToolbarProps>()
+const props = withDefaults(defineProps<{
+  noteTitle?: string
+  noteContent?: string
+  isNewNotePage?: boolean
+  lastModified?: string  // Change type to string since that's what we're receiving
+  // ... any other props
+}>(), {
+  noteTitle: '',
+  noteContent: '',
+  isNewNotePage: false,
+  lastModified: ''
+})
 const emit = defineEmits([
   'add-attachment', 'format', 'toggle-checklist', 'new-note', 
   'save', 'file-selected', 'find-in-note', 'delete-note', 
@@ -56,6 +67,11 @@ const emit = defineEmits([
 
 const onBackClick = inject('onBackClick', () => {})
 const showSidePanel = ref(false)
+
+// Create a computed property to convert the string to Date when needed
+const lastModifiedDate = computed(() => 
+  props.lastModified ? new Date(props.lastModified) : new Date()
+)
 
 // Extracted sharing logic
 const shareNote = async () => {

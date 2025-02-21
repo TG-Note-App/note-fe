@@ -8,7 +8,7 @@
         />
         <NoteEditor
           v-model:title="noteRef.title"
-          v-model:content="noteRef.text"
+          v-model:content="noteRef.content"
         />
       </div>
     </div>
@@ -28,7 +28,7 @@
   const noteRef = ref<Note>({
     id: null,
     title: '',
-    text: '',
+    content: '',
     lastModified: new Date()
   })
 
@@ -45,7 +45,7 @@
 
   // Remove the watch for auto-save and handle save on back button click
   const handleBackClick = () => {
-    if (noteRef.value.title || noteRef.value.text) {
+    if (noteRef.value.title || noteRef.value.content) {
       saveNote()
     }
   }

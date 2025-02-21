@@ -1,6 +1,6 @@
 export interface Note {
   id: string | null
   title: string
-  text: string
+  content: string
   lastModified: Date
 } 

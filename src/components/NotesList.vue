@@ -30,7 +30,7 @@ const props = defineProps({
 // Extract filtering logic to a separate computed property
 const filteredNotes = computed(() => 
   props.notes.filter(note =>
-    note.title.toLowerCase().includes(props.search.toLowerCase())
+    note?.content?.toLowerCase().includes(props.search.toLowerCase())
   )
 );
 

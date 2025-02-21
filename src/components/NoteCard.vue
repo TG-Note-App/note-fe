@@ -14,7 +14,7 @@
           @click="handlePin"
           class="bg-blue-700/20 hover:bg-blue-700/50 border-l"
         >
-          <i class="bi text-base sm:text-lg md:text-xl text-blue-500" :class="{ 'bi-pin-fill': props.isPinned, 'bi-pin': !props.isPinned }"></i>
+          <i class="bi text-base sm:text-lg md:text-xl text-blue-500" :class="{ 'bi-pin-fill': isPinned, 'bi-pin': !isPinned }"></i>
         </ActionButton>
         <ActionButton
           @click="handleDelete"
@@ -61,7 +61,7 @@ const props = defineProps({
     type: String,
     required: true
   },
-  text: {
+  content: {
     type: String,
     required: true
   },
@@ -80,14 +80,19 @@ const truncatedContent = ref('')
 const truncatedTitleContent = ref('')
 let resizeObserver = null
 
+const isPinned = computed(() => {
+  const note = notesStore.notes.find(note => note.id === props.id)
+  return note ? note.isPinned : props.isPinned
+})
+
 // Watch for changes in props.text and container size
 const updateTruncatedText = () => {
-  if (!props.text) {
+  if (!props.content) {
     truncatedContent.value = ''
     return
   }
   
-  const text = props.text.trim()
+  const text = props.content.trim()
   
   if (!textPreview.value) {
     truncatedContent.value = text
@@ -210,12 +215,12 @@ const confirmDelete = () => {
   showDeleteModal.value = false
 }
 
-const handlePin = (event) => {
-  if (event) {
-    event.preventDefault()
-    event.stopPropagation()
+const handlePin = async () => {
+  try {
+    await notesStore.togglePin(props.id)
+  } catch (error) {
+    console.error('Failed to toggle pin:', error)
   }
-  notesStore.togglePin(props.id)
 }
 
 onMounted(() => {

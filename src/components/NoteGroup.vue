@@ -5,7 +5,7 @@
       :key="note.id"
       :id="note.id"
       :title="note.title"
-      :text="note.text"
+      :content="note.content"
       :lastModified="note.lastModified"
       :isPinned="note.isPinned"
     />

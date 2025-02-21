@@ -31,14 +31,14 @@
         </button>
         <button 
           @click="$emit('close')" 
-          class="relative px-6 sm:px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold shadow-lg 
-          hover:shadow-gray-500/50 active:shadow-gray-500/30 transition-all duration-300
-          before:absolute before:inset-0 before:bg-gradient-to-r before:from-gray-700 before:to-gray-800 
+          class="relative px-6 sm:px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold shadow-lg 
+          hover:shadow-blue-500/50 active:shadow-blue-500/30 transition-all duration-300
+          before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-600 to:blue-700 
           before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity
           overflow-hidden group"
         >
           <span class="relative z-10 flex items-center gap-2">
-            <i class="bi bi-arrow-left text-xl group-hover:-translate-x-1 transition-transform"></i>
+            <i class="bi bi-x-lg text-xl group-hover:scale-110 transition-transform"></i>
             Нет
           </span>
         </button>
