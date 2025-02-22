@@ -32,6 +32,10 @@
             <span class="text-gray-500 flex-shrink-0 text-[14px] sm:text-sm whitespace-nowrap">
               {{ formatDate(props.lastModified) }}
             </span>
+            <span v-if="attachmentsCount" class="flex items-center text-gray-500 text-[14px] sm:text-sm">
+              <i class="bi bi-paperclip"></i>
+              {{ attachmentsCount }}
+            </span>
             <p ref="textPreview" class="note-preview text-sm sm:text-base">
               {{ truncatedText }}
             </p>
@@ -72,6 +76,10 @@ const props = defineProps({
   isPinned: {
     type: Boolean,
     default: false
+  },
+  attachments: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -84,6 +92,8 @@ const isPinned = computed(() => {
   const note = notesStore.notes.find(note => note.id === props.id)
   return note ? note.isPinned : props.isPinned
 })
+
+const attachmentsCount = computed(() => props.attachments?.length || 0)
 
 // Watch for changes in props.text and container size
 const updateTruncatedText = () => {

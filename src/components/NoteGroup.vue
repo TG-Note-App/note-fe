@@ -8,6 +8,7 @@
       :content="note.content"
       :lastModified="note.lastModified"
       :isPinned="note.isPinned"
+      :attachments="note.attachments"
     />
   </div>
 </template>
