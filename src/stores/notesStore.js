@@ -128,8 +128,9 @@ export const useNotesStore = defineStore('notes', {
         // Check if there's actually JSON content to parse
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
-          const savedNote = await response.json()
-          this.notes.push(savedNote)
+          const id = await response.json()
+          note.id = id
+          this.notes.push(note)
         } else {
           // If no JSON response, use the original note with a generated ID
           const newNote = {

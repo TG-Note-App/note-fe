@@ -35,7 +35,6 @@ import NoteToolbar from '../components/note/NoteToolbar.vue'
 import NoteEditor from '../components/note/NoteEditor.vue'
 import DeleteNoteModal from '../components/DeleteNoteModal.vue'
 import type { Note } from '../types/note'
-import { at } from 'core-js/core/string'
 
 const route = useRoute()
 const router = useRouter()
