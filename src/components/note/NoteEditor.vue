@@ -13,7 +13,9 @@
         <NoteAttachment
           v-for="attachment in attachments"
           :key="attachment.id"
-          v-bind="attachment"
+          :file="attachment"
+          @delete="emit('deleteAttachment', attachment.id)"
+          @download="emit('downloadAttachment', attachment.url, attachment.filename, attachment.extension)"
         />
     </div>
     <textarea

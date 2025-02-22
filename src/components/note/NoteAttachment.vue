@@ -34,7 +34,7 @@
 
     <!-- File Information -->
     <div class="min-w-0 flex-1">
-      <h3 class="text-sm font-medium text-gray-900 truncate">{{ filename }}</h3>
+      <h3 class="text-sm font-medium text-gray-900 truncate">{{ truncatedFilename }}</h3>
       <div class="mt-0.5 text-xs">
         <span class="font-medium uppercase tracking-wider" :class="{
           'text-blue-600': isDocument,
@@ -47,18 +47,29 @@
       </div>
     </div>
 
-    <!-- Download Button -->
-    <button 
-      @click="downloadFile"
-      class="shrink-0 p-2 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50 active:bg-blue-100 transition-all duration-200 focus:outline-non" 
-      :class="{
-        'hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100': isDocument,
-        'hover:text-green-600 hover:bg-green-50 active:bg-green-100': isImage,
-        'hover:text-purple-600 hover:bg-purple-50 active:bg-purple-100': !isImage && !isDocument
-      }"
-    >
-      <i class="bi bi-download text-lg"></i>
-    </button>
+    <!-- Action Buttons -->
+    <div class="shrink-0 flex gap-1">
+      <!-- Download Button -->
+      <button 
+        @click="downloadFile"
+        class="p-2 text-gray-400 rounded-full transition-all duration-200 focus:outline-none" 
+        :class="{
+          'hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100': isDocument,
+          'hover:text-green-600 hover:bg-green-50 active:bg-green-100': isImage,
+          'hover:text-purple-600 hover:bg-purple-50 active:bg-purple-100': !isImage && !isDocument
+        }"
+      >
+        <i class="bi bi-download text-lg"></i>
+      </button>
+
+      <!-- Delete Button -->
+      <button 
+        @click="deleteFile"
+        class="p-2 text-gray-400 rounded-full hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-all duration-200 focus:outline-none"
+      >
+        <i class="bi bi-trash text-lg"></i>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -66,25 +77,30 @@
 import { computed } from '@vue/runtime-dom'
 
 const props = defineProps<{
-  filename: string,
-  extension: string,
-  size: number,
-  url: string
+  file: {
+    filename: string,
+    extension: string,
+    size: number,
+    url: string
+  }
 }>();
 
 const isImage = computed(() => {
+  if (!props.file?.extension) return false;
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-  return imageExtensions.includes(props.extension.toLowerCase());
+  return imageExtensions.includes(props.file.extension.toLowerCase());
 });
 
 const isDocument = computed(() => {
+  if (!props.file?.extension) return false;
   const docExtensions = ['pdf', 'doc', 'docx', 'txt', 'xls', 'xlsx'];
-  return docExtensions.includes(props.extension.toLowerCase());
+  return docExtensions.includes(props.file.extension.toLowerCase());
 });
 
 const formattedSize = computed(() => {
+  if (!props.file?.size) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB'];
-  let size = props.size;
+  let size = props.file.size;
   let unitIndex = 0;
 
   while (size >= 1024 && unitIndex < units.length - 1) {
@@ -95,23 +111,27 @@ const formattedSize = computed(() => {
   return `${Math.round(size * 100) / 100} ${units[unitIndex]}`;
 });
 
-const downloadFile = () => {
-  try {
-    if (!props.url) {
-      console.error('No URL provided for download');
-      return;
-    }
-
-    // Create a link and trigger download
-    const link = document.createElement('a');
-    link.href = props.url;
-    link.download = `${props.filename}`; // Add extension to filename
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {
-    console.error('Error downloading file:', error);
+const truncatedFilename = computed(() => {
+  if (!props.file?.filename) return '';
+  const maxLength = 30;
+  if (props.file.filename.length <= maxLength) {
+    return props.file.filename;
   }
+  return props.file.filename.substring(0, maxLength) + '...';
+});
+
+const downloadFile = () => {
+  emit('download', props.file.url, props.file.filename, props.file.extension);
+};
+
+// Define emits
+const emit = defineEmits<{
+  (e: 'delete', filename: string): void
+  (e: 'download', url: string, filename: string, extension: string): void
+}>();
+
+const deleteFile = () => {
+  emit('delete', props.file.filename);
 };
 </script>
 

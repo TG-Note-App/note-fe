@@ -18,6 +18,74 @@ export const useNotesStore = defineStore('notes', {
     }
   },
   actions: {
+    async deleteAttachment(noteId, attachmentId) {
+      try {
+        const response = await fetch(`http://localhost:8080/notes/${noteId}/delete-file`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ attachmentId })
+        });
+
+        console.log('Deleting attachment!!!:', JSON.stringify({attachmentId}))
+
+        if (!response.ok) throw new Error('Failed to delete attachment');
+
+        // Update the note's attachments in the store
+        const noteIndex = this.notes.findIndex(note => note.id === noteId);
+        if (noteIndex !== -1) {
+          this.notes[noteIndex].attachments = this.notes[noteIndex].attachments.filter(
+            attachment => attachment.id !== attachmentId
+          );
+        }
+      } catch (err) {
+        this.error = err.message;
+        console.error('Error deleting attachment:', err);
+        throw err;
+      }
+    },
+    async uploadAttachment(noteId, attachment) {
+      try {
+        // Convert base64 to blob
+        const base64Response = await fetch(attachment.url);
+        const blob = await base64Response.blob();
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('file', blob, attachment.filename);
+        formData.append('noteId', noteId);
+
+        const response = await fetch(`http://localhost:8080/notes/${noteId}/upload-file`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error('Failed to upload attachment');
+
+        const savedAttachment = await response.json();
+        
+        // Update the note's attachments in the store
+        const noteIndex = this.notes.findIndex(note => note.id === noteId);
+        if (noteIndex !== -1) {
+          const updatedAttachments = [...this.notes[noteIndex].attachments];
+          // Replace the temporary attachment with the saved one
+          const attachmentIndex = updatedAttachments.findIndex(a => a.id === attachment.id);
+          if (attachmentIndex !== -1) {
+            updatedAttachments[attachmentIndex] = savedAttachment;
+          } else {
+            updatedAttachments.push(savedAttachment);
+          }
+          this.notes[noteIndex].attachments = updatedAttachments;
+        }
+
+        return savedAttachment;
+      } catch (err) {
+        this.error = err.message;
+        console.error('Error uploading attachment:', err);
+        throw err;
+      }
+    },
     async fetchNotes() {
       this.isLoading = true
       this.error = null
@@ -31,6 +99,7 @@ export const useNotesStore = defineStore('notes', {
           lastModified: new Date(note.lastModified),
           isPinned: Boolean(note.isPinned) // Ensure isPinned is properly converted to boolean
         }))
+
         console.log(this.notes)
       } catch (err) {
         this.error = err.message
@@ -73,14 +142,28 @@ export const useNotesStore = defineStore('notes', {
     },
     async updateNote(updatedNote) {
       try {
-        console.log(JSON.stringify(updatedNote))
+        // Handle attachments first if there are any new ones
+        if (updatedNote.attachments) {
+          const existingNote = this.notes.find(note => note.id === updatedNote.id);
+          const newAttachments = updatedNote.attachments.filter(
+            attachment => !existingNote?.attachments?.find(a => a.id === attachment.id)
+          );
+
+          // Upload new attachments
+          for (const attachment of newAttachments) {
+            await this.uploadAttachment(updatedNote.id, attachment);
+          }
+        }
+
+        // Continue with existing update logic
         const response = await fetch(`http://localhost:8080/notes/${updatedNote.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(updatedNote)
-        })
+        });
+
         console.log(response)
         if (!response.ok) throw new Error('Failed to update note')
 
@@ -149,6 +232,6 @@ export const useNotesStore = defineStore('notes', {
         console.error('Error updating pin status:', err)
         throw err
       }
-    }
+    },
   }
 }) 

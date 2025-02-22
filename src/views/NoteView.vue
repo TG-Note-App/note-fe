@@ -20,6 +20,8 @@
         v-model:title="noteRef.title"
         v-model:content="noteRef.content"
         :attachments="noteRef.attachments"
+        @delete-attachment="handleFileDelete"
+        @download-attachment="handleFileDownload"
       />
     </div>
   </div>
@@ -33,7 +35,7 @@ import NoteToolbar from '../components/note/NoteToolbar.vue'
 import NoteEditor from '../components/note/NoteEditor.vue'
 import DeleteNoteModal from '../components/DeleteNoteModal.vue'
 import type { Note } from '../types/note'
-import NoteAttachment from '../components/note/NoteAttachment.vue'
+import { at } from 'core-js/core/string'
 
 const route = useRoute()
 const router = useRouter()
@@ -73,35 +75,99 @@ const handleFileSelected = async (files: Array<{
   ext: string,
   size: number
 }>) => {
-  console.log('Files received:', files);
+  try {
+    const filePromises = files.map(({ file, filename, ext, size }) => 
+      new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }).then(async (url) => {
+        // Create temporary attachment object
+        const tempAttachment = {
+          id: crypto.randomUUID(),
+          filename: filename,
+          extension: ext,
+          size: size,
+          url: url
+        };
 
-  const filePromises = files.map(({ file, filename, ext, size }) => 
-    new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        console.log('File read result:', reader.result); // Debug log
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }).then(url => {
-      console.log('Processing URL:', url); // Debug log
-      return {
-        id: crypto.randomUUID(),
-        filename,
-        extension: ext,
-        size,
-        url
-      };
-    })
-  );
+        // Upload the attachment and get the saved version from backend
+        if (noteRef.value.id) {
+          const savedAttachment = await notesStore.uploadAttachment(
+            parseInt(noteRef.value.id),
+            tempAttachment
+          );
+          return savedAttachment;
+        }
+        return tempAttachment;
+      })
+    );
 
-  const newAttachments = await Promise.all(filePromises);
-  console.log('New attachments:', newAttachments); // Verify attachments have URLs
+    const newAttachments = await Promise.all(filePromises);
 
-  noteRef.value = {
-    ...noteRef.value,
-    attachments: [...(noteRef.value.attachments || []), ...newAttachments]
-  };
+    noteRef.value = {
+      ...noteRef.value,
+      attachments: [...(noteRef.value.attachments || []), ...newAttachments]
+    };
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    // Here you might want to add some error handling UI feedback
+  }
+};
+
+const handleFileDelete = async (id) => {
+  if (!noteRef.value.attachments) return;
+  
+  try {
+    console.log('Deleting attachment:', id);
+    // Call the store method to delete the attachment
+    await notesStore.deleteAttachment(noteId, id);
+    
+    // Update local state
+    noteRef.value = {
+      ...noteRef.value,
+      attachments: noteRef.value.attachments.filter(attachment => attachment.id !== id)
+    };
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    // Here you might want to add some error handling UI feedback
+  }
+};
+
+const handleFileDownload = async (url: string, filename: string, extension: string) => {
+  try {
+    // Fetch the file content from MinIO URL
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    // Get the blob from the response
+    const blob = await response.blob();
+    
+    // Create a URL for the blob
+    const blobUrl = window.URL.createObjectURL(blob);
+    
+    // Create a temporary anchor element and ensure filename has extension
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    // Add extension if filename doesn't already have it
+    const downloadFilename = filename.endsWith(`.${extension}`) 
+      ? filename 
+      : `${filename}.${extension}`;
+    link.download = downloadFilename;
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the blob URL
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    // Here you might want to add some error handling UI feedback
+  }
 };
 
 // Add watcher to sync changes back to store
