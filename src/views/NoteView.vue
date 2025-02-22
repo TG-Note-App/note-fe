@@ -84,14 +84,18 @@ const handleFileSelected = async (files: Array<{
         };
         reader.readAsDataURL(file);
       }).then(async (url) => {
-        // Create temporary attachment object
+        // Create temporary attachment object with proper extension
         const tempAttachment = {
           id: crypto.randomUUID(),
           filename: filename,
-          extension: ext,
+          // Remove the dot if it exists in the extension
+          extension: ext.toLowerCase().replace(/^\./, ''),
           size: size,
           url: url
         };
+
+        // For debugging
+        console.log('Created temp attachment:', tempAttachment);
 
         // Upload the attachment and get the saved version from backend
         if (noteRef.value.id) {
@@ -99,6 +103,7 @@ const handleFileSelected = async (files: Array<{
             parseInt(noteRef.value.id),
             tempAttachment
           );
+          console.log('Saved attachment:', savedAttachment);
           return savedAttachment;
         }
         return tempAttachment;
@@ -106,6 +111,7 @@ const handleFileSelected = async (files: Array<{
     );
 
     const newAttachments = await Promise.all(filePromises);
+    console.log('New attachments:', newAttachments);
 
     noteRef.value = {
       ...noteRef.value,
@@ -113,7 +119,6 @@ const handleFileSelected = async (files: Array<{
     };
   } catch (error) {
     console.error('Error uploading files:', error);
-    // Here you might want to add some error handling UI feedback
   }
 };
 

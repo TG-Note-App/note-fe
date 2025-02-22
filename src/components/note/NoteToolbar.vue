@@ -105,15 +105,15 @@ const actionButtons = computed<ActionButton[]>(() => [
     handler: shareNote
   },
   {
+    title: 'Add Attachment',
+    icon: 'bi-paperclip',
+    handler: () => fileInputRef.value?.click()
+  },
+  {
     title: 'Delete',
     icon: 'bi-trash',
     handler: () => emit('delete-note')
   },
-  {
-    title: 'Add Attachment',
-    icon: 'bi-paperclip',
-    handler: () => fileInputRef.value?.click()
-  }
 ])
 if (!props.isNewNotePage) {
   actionButtons.value.push({
