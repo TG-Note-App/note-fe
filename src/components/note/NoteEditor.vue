@@ -13,9 +13,7 @@
         <NoteAttachment
           v-for="attachment in attachments"
           :key="attachment.id"
-          :filename="attachment.filename"
-          :extension="attachment.extension"
-          :size="attachment.size"
+          v-bind="attachment"
         />
     </div>
     <textarea

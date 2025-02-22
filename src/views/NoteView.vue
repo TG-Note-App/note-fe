@@ -16,13 +16,6 @@
           :noteContent="noteRef.content"
           :attachments="noteRef.attachments"
       />
-      <div v-if="noteRef.attachments?.length" class="space-y-2 p-4">
-        <NoteAttachment
-          v-for="attachment in noteRef.attachments"
-          :key="attachment.id"
-          v-bind="attachment"
-        />
-      </div>
       <NoteEditor
         v-model:title="noteRef.title"
         v-model:content="noteRef.content"
