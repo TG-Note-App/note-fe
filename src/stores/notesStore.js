@@ -68,6 +68,11 @@ export const useNotesStore = defineStore('notes', {
         // Update the note's attachments in the store
         const noteIndex = this.notes.findIndex(note => note.id === noteId);
         if (noteIndex !== -1) {
+          // Initialize attachments array if it doesn't exist
+          if (!this.notes[noteIndex].attachments) {
+            this.notes[noteIndex].attachments = [];
+          }
+          
           const updatedAttachments = [...this.notes[noteIndex].attachments];
           // Replace the temporary attachment with the saved one
           const attachmentIndex = updatedAttachments.findIndex(a => a.id === attachment.id);
