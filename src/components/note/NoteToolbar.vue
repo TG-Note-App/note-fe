@@ -44,7 +44,8 @@
 <script setup lang="ts">
 import { inject, ref, computed, withDefaults } from 'vue'
 import { useRouter } from 'vue-router'
-import type { NoteToolbarProps, ActionButton } from '../../types/types' // You'll need to create this
+import type { ActionButton } from '../../types/types' // You'll need to create this
+import { Attachment } from '../../types/note';
 
 const router = useRouter()
 const props = withDefaults(defineProps<{
@@ -52,12 +53,14 @@ const props = withDefaults(defineProps<{
   noteContent?: string
   isNewNotePage?: boolean
   lastModified?: string  // Change type to string since that's what we're receiving
+  attachments?: Attachment[]
   // ... any other props
 }>(), {
   noteTitle: '',
   noteContent: '',
   isNewNotePage: false,
-  lastModified: ''
+  lastModified: '',
+  attachments: []
 })
 const emit = defineEmits([
   'add-attachment', 'format', 'toggle-checklist', 'new-note', 
@@ -67,11 +70,6 @@ const emit = defineEmits([
 
 const onBackClick = inject('onBackClick', () => {})
 const showSidePanel = ref(false)
-
-// Create a computed property to convert the string to Date when needed
-const lastModifiedDate = computed(() => 
-  props.lastModified ? new Date(props.lastModified) : new Date()
-)
 
 // Extracted sharing logic
 const shareNote = async () => {
@@ -131,7 +129,13 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const handleFileSelect = (event: Event) => {
   const files = (event.target as HTMLInputElement).files;
   if (files && files.length > 0) {
-    emit('file-selected', Array.from(files));
+    const fileArray = Array.from(files).map(file => ({
+      file,
+      filename: file.name,
+      ext: file.name.split('.').pop() || '',
+      size: file.size
+    }));
+    emit('file-selected', fileArray);
     // Reset the input so the same file can be selected again
     (event.target as HTMLInputElement).value = '';
   }

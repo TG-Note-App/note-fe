@@ -11,11 +11,11 @@
     </div>
     <div class="flex gap-4 overflow-x-auto pb-10 custom-scrollbar">
         <NoteAttachment
-          v-for="i in 10"
-          :key="i"
-          filename="test"
-          ext="docx"
-          size="100"
+          v-for="attachment in attachments"
+          :key="attachment.id"
+          :filename="attachment.filename"
+          :extension="attachment.extension"
+          :size="attachment.size"
         />
     </div>
     <textarea
@@ -31,9 +31,11 @@
 import { watch, ref } from 'vue'
 import { debounce } from 'lodash'
 import NoteAttachment from './NoteAttachment.vue'
+import { Attachment } from '../../types/note';
 const props = defineProps<{
   title: string
   content: string
+  attachments: Attachment[]
 }>()
 
 const emit = defineEmits<{

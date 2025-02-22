@@ -10,13 +10,23 @@
       <NoteToolbar
           :note-id="noteRef.id ? Number(noteRef.id) : undefined"
           @delete-note="handleDelete"
+          @file-selected="handleFileSelected"
           :isNewNotePage="false"
           :noteTitle="noteRef.title"
           :noteContent="noteRef.content"
+          :attachments="noteRef.attachments"
       />
+      <div v-if="noteRef.attachments?.length" class="space-y-2 p-4">
+        <NoteAttachment
+          v-for="attachment in noteRef.attachments"
+          :key="attachment.id"
+          v-bind="attachment"
+        />
+      </div>
       <NoteEditor
         v-model:title="noteRef.title"
         v-model:content="noteRef.content"
+        :attachments="noteRef.attachments"
       />
     </div>
   </div>
@@ -30,6 +40,7 @@ import NoteToolbar from '../components/note/NoteToolbar.vue'
 import NoteEditor from '../components/note/NoteEditor.vue'
 import DeleteNoteModal from '../components/DeleteNoteModal.vue'
 import type { Note } from '../types/note'
+import NoteAttachment from '../components/note/NoteAttachment.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,7 +54,8 @@ const noteRef = ref<Note>({
   id: note.value?.id?.toString() ?? null,
   title: note.value?.title ?? '',
   content: note.value?.content ?? '',
-  lastModified: new Date()
+  lastModified: new Date(),
+  attachments: note.value?.attachments ?? []
 })
 
 const handleDelete = (event) => {
@@ -61,6 +73,44 @@ const confirmDelete = () => {
   router.push('/notes')
 }
 
+// Add this function to handle file selection
+const handleFileSelected = async (files: Array<{
+  file: File,
+  filename: string,
+  ext: string,
+  size: number
+}>) => {
+  console.log('Files received:', files);
+
+  const filePromises = files.map(({ file, filename, ext, size }) => 
+    new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log('File read result:', reader.result); // Debug log
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }).then(url => {
+      console.log('Processing URL:', url); // Debug log
+      return {
+        id: crypto.randomUUID(),
+        filename,
+        extension: ext,
+        size,
+        url
+      };
+    })
+  );
+
+  const newAttachments = await Promise.all(filePromises);
+  console.log('New attachments:', newAttachments); // Verify attachments have URLs
+
+  noteRef.value = {
+    ...noteRef.value,
+    attachments: [...(noteRef.value.attachments || []), ...newAttachments]
+  };
+};
+
 // Add watcher to sync changes back to store
 watch(noteRef, (newValue) => {
   if (note.value) {
@@ -68,7 +118,8 @@ watch(noteRef, (newValue) => {
       ...note.value,
       title: newValue.title,
       content: newValue.content,
-      lastModified: new Date()
+      lastModified: new Date(),
+      attachments: newValue.attachments
     })
   }
 }, { deep: true })

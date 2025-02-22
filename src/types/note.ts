@@ -7,7 +7,7 @@ export interface Note {
 } 
 
 export interface Attachment {
-  id: string | null
+  id: string
   filename: string
   extension: string
   size: number
