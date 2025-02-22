@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
+  <div class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar">
     <div class="flex flex-col gap-2 mb-3">
       <textarea
         :value="title"
@@ -9,9 +9,9 @@
         ref="titleInput"
       ></textarea>
     </div>
-    <div class="flex gap-4 overflow-x-auto pb-10">
+    <div class="flex gap-4 overflow-x-auto pb-10 custom-scrollbar">
         <NoteAttachment
-          v-for="i in 20"
+          v-for="i in 10"
           :key="i"
           filename="test"
           ext="docx"
@@ -21,7 +21,7 @@
     <textarea
       :value="content"
       @input="handleContentInput"
-      class="w-full h-[calc(100%-8rem)] outline-none resize-none text-lg bg-transparent text-gray-300 placeholder-gray-600"
+      class="w-full h-[calc(100%-8rem)] outline-none resize-none text-lg bg-transparent text-gray-300 placeholder-gray-600 custom-scrollbar"
       placeholder="Start writing..."
     ></textarea>
   </div>
@@ -97,5 +97,31 @@ textarea::placeholder {
 textarea {
   border: none;
   background: transparent;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;  /* for vertical scrollbar */
+  height: 8px; /* for horizontal scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
 }
 </style> 
