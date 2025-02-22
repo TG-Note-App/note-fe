@@ -35,6 +35,7 @@
 
   // Add save functionality
   const saveNote = () => {
+    console.log("saving note")
     const newNote = {
       ...noteRef.value,
       id: notesStore.notes.length ? Math.max(...notesStore.notes.map(note => Number(note.id))) + 1 : 1,

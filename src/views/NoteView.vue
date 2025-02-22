@@ -13,7 +13,7 @@
           :isNewNotePage="false"
           :noteTitle="noteRef.title"
           :noteContent="noteRef.content"
-        />
+      />
       <NoteEditor
         v-model:title="noteRef.title"
         v-model:content="noteRef.content"

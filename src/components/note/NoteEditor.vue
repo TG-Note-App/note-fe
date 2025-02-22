@@ -8,7 +8,15 @@
         placeholder="Title"
         ref="titleInput"
       ></textarea>
-      <span class="text-sm text-gray-500">{{ saveStatus }}</span>
+    </div>
+    <div class="flex gap-4 overflow-x-auto pb-10">
+        <NoteAttachment
+          v-for="i in 20"
+          :key="i"
+          filename="test"
+          ext="docx"
+          size="100"
+        />
     </div>
     <textarea
       :value="content"
@@ -22,7 +30,7 @@
 <script setup lang="ts">
 import { watch, ref } from 'vue'
 import { debounce } from 'lodash'
-
+import NoteAttachment from './NoteAttachment.vue'
 const props = defineProps<{
   title: string
   content: string
