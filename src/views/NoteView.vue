@@ -240,7 +240,6 @@ watch(
         title: newValue.title,
         content: newValue.content,
         lastModified: new Date(),
-        attachments: newValue.attachments
       })
       
       // Update the previous state after saving
