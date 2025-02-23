@@ -1,62 +1,50 @@
 <template>
-  <div class="group flex items-center w-[280px] gap-2 p-2 bg-sky-100 rounded-lg bordershadow-sm hover:shadow transition-all duration-200">
+  <div class="group flex items-center w-[280px] gap-3 p-3 bg-white/90 backdrop-blur rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
     <!-- File Icon based on extension -->
-    <div class="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg" :class="{
-      'bg-blue-100 group-hover:bg-blue-200': isDocument,
-      'bg-green-100 group-hover:bg-green-200': isImage,
-      'bg-purple-100 group-hover:bg-purple-200': !isImage && !isDocument
-    }">
+    <div class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl shadow-inner" 
+         :class="{
+           'bg-blue-100 group-hover:bg-blue-200': isDocument,
+           'bg-emerald-100 group-hover:bg-emerald-200': isImage,
+           'bg-violet-100 group-hover:bg-violet-200': !isImage && !isDocument
+         }">
       <i v-if="isImage" 
          class="bi bi-image text-2xl"
-         :class="{
-           'text-blue-600': isDocument,
-           'text-green-600': isImage,
-           'text-purple-600': !isImage && !isDocument
-         }">
+         :class="{ 'text-emerald-600': isImage }">
       </i>
       <i v-else-if="isDocument" 
          class="bi bi-file-text text-2xl"
-         :class="{
-           'text-blue-600': isDocument,
-           'text-green-600': isImage,
-           'text-purple-600': !isImage && !isDocument
-         }">
+         :class="{ 'text-blue-600': isDocument }">
       </i>
       <i v-else 
          class="bi bi-file-earmark text-2xl"
-         :class="{
-           'text-blue-600': isDocument,
-           'text-green-600': isImage,
-           'text-purple-600': !isImage && !isDocument
-         }">
+         :class="{ 'text-violet-600': !isImage && !isDocument }">
       </i>
     </div>
 
     <!-- File Information -->
-    <div class="w-[160px] flex-none">
-      <h3 class="text-sm font-medium text-gray-900 truncate">{{ truncatedFilename }}</h3>
-      <div class="mt-0.5 text-xs">
-        <span class="font-medium uppercase tracking-wider" :class="{
-          'text-blue-600': isDocument,
-          'text-green-600': isImage,
-          'text-purple-600': !isImage && !isDocument
-        }">{{ extension }}</span>
-      </div>
-      <div class="mt-0.5 text-xs text-gray-500">
-        {{ formattedSize }}
+    <div class="flex-1 min-w-0">
+      <h3 class="text-sm font-medium text-gray-800 truncate">{{ truncatedFilename }}</h3>
+      <div class="flex items-center gap-2 mt-0.5">
+        <span class="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md"
+              :class="{
+                'bg-blue-100 text-blue-600': isDocument,
+                'bg-emerald-100 text-emerald-600': isImage,
+                'bg-violet-100 text-violet-600': !isImage && !isDocument
+              }">{{ extension }}</span>
+        <span class="text-xs text-gray-500">{{ formattedSize }}</span>
       </div>
     </div>
 
     <!-- Action Buttons -->
-    <div class="shrink-0 flex gap-0.5">
+    <div class="shrink-0 flex gap-1">
       <!-- Download Button -->
       <button 
         @click="downloadFile"
-        class="p-1.5 text-gray-400 rounded-full transition-all duration-200 focus:outline-none" 
+        class="p-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1" 
         :class="{
-          'hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100': isDocument,
-          'hover:text-green-600 hover:bg-green-50 active:bg-green-100': isImage,
-          'hover:text-purple-600 hover:bg-purple-50 active:bg-purple-100': !isImage && !isDocument
+          'hover:bg-blue-50 text-blue-500 hover:text-blue-600 focus:ring-blue-500': isDocument,
+          'hover:bg-emerald-50 text-emerald-500 hover:text-emerald-600 focus:ring-emerald-500': isImage,
+          'hover:bg-violet-50 text-violet-500 hover:text-violet-600 focus:ring-violet-500': !isImage && !isDocument
         }"
       >
         <i class="bi bi-download text-lg"></i>
@@ -65,7 +53,7 @@
       <!-- Delete Button -->
       <button 
         @click="deleteFile"
-        class="p-1.5 text-gray-400 rounded-full hover:text-red-600 hover:bg-red-50 active:bg-red-100 transition-all duration-200 focus:outline-none"
+        class="p-2 text-gray-400 rounded-lg hover:bg-red-50 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all duration-200"
       >
         <i class="bi bi-trash text-lg"></i>
       </button>
