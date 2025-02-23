@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from '@vue/runtime-dom'
+import { ref, watch, computed, onMounted } from '@vue/runtime-dom'
 import { useRoute , useRouter} from 'vue-router'
 import { useNotesStore } from '../stores/notesStore'
 import NoteToolbar from '../components/note/NoteToolbar.vue'
@@ -40,6 +40,7 @@ const route = useRoute()
 const router = useRouter()
 const notesStore = useNotesStore()
 const showDeleteModal = ref(false)
+
 // Get note ID from URL
 const noteId = parseInt(route.params.id as string)
 // Get note from store
@@ -51,6 +52,17 @@ const noteRef = ref<Note>({
   lastModified: new Date(),
   attachments: note.value?.attachments ?? []
 })
+
+// Add onMounted hook to fetch note
+// onMounted(async () => {
+//   try {
+//     await notesStore.fetchNoteById(noteId)
+//   } catch (error) {
+//     console.error('Error fetching note:', error)
+//     // Optionally redirect to notes list if note not found
+//     router.push('/notes')
+//   }
+// })
 
 const handleDelete = (event) => {
   if (event) {  // Check if event exists

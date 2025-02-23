@@ -128,17 +128,10 @@ export const useNotesStore = defineStore('notes', {
         // Check if there's actually JSON content to parse
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
-          const id = await response.json()
-          note.id = id
+          const resp = await response.json()
+          note.id = resp.id
           this.notes.push(note)
-        } else {
-          // If no JSON response, use the original note with a generated ID
-          const newNote = {
-            ...note,
-            id: Date.now(), // Temporary ID if server doesn't provide one
-            lastModified: new Date()
-          }
-          this.notes.push(newNote)
+          return resp.id
         }
       } catch (err) {
         this.error = err.message

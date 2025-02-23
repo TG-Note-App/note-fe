@@ -109,17 +109,17 @@ const actionButtons = computed<ActionButton[]>(() => [
     icon: 'bi-paperclip',
     handler: () => fileInputRef.value?.click()
   },
-  {
-    title: 'Delete',
-    icon: 'bi-trash',
-    handler: () => emit('delete-note')
-  },
 ])
 if (!props.isNewNotePage) {
   actionButtons.value.push({
     title: 'New Note',
     icon: 'bi-plus-square',
     handler: handleNewNote
+  }, 
+  {
+    title: 'Delete',
+    icon: 'bi-trash',
+    handler: () => emit('delete-note')
   })
 }
 

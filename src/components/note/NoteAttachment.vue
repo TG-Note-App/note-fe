@@ -85,6 +85,10 @@ const props = defineProps<{
   }
 }>();
 
+const extension = computed(() => {
+  return props.file?.extension || '';
+});
+
 const isImage = computed(() => {
   if (!props.file?.extension) return false;
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];

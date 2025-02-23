@@ -43,35 +43,32 @@
   // Add a flag to track if note was created
   const isNoteCreated = ref(false)
 
-  // Modify watch to handle both creation and updates
-  watch(noteRef, (newValue) => {
-    if (!isNoteCreated.value && (newValue.title || newValue.content)) {
-      // Create new note on first edit
-      const newNote = {
-        ...noteRef.value,
-        id: notesStore.notes.length ? Math.max(...notesStore.notes.map(note => Number(note.id))) + 1 : 1,
-        lastModified: new Date(),
-        attachments: []
-      }
-      notesStore.addNote(newNote)
-      noteRef.value.id = newNote.id
-      isNoteCreated.value = true
-    } else if (isNoteCreated.value && noteRef.value.id) {
-      // Update existing note
-      notesStore.updateNote({
-        ...noteRef.value,
-        title: newValue.title,
-        content: newValue.content,
-        lastModified: new Date(),
-        attachments: newValue.attachments
-      })
-    }
-  }, { deep: true })
-
   // Remove or modify saveNote function since it's handled by the watcher
-  const handleBackClick = () => {
-    // No need to save here as it's handled by the watcher
-    router.push('/notes')
+  const handleBackClick = async () => {
+    try {
+      if (noteRef.value.title || noteRef.value.content || noteRef.value.attachments?.length > 0) {
+        if (!noteRef.value.id) {
+          // If it's a new note, add it
+          const resp = await notesStore.addNote({
+            title: noteRef.value.title,
+            content: noteRef.value.content,
+            lastModified: new Date(),
+            attachments: noteRef.value.attachments
+          })
+          noteRef.value.id = resp.id
+        } else {
+          // If it's an existing note, update it
+          await notesStore.updateNote({
+            ...noteRef.value,
+            lastModified: new Date()
+          })
+        }
+      }
+      router.push('/notes')
+    } catch (error) {
+      console.error('Error saving note:', error)
+      // You might want to add some error handling UI feedback here
+    }
   }
 
   // Add delete handler
@@ -115,12 +112,11 @@ const handleFileSelected = async (files: Array<{
         if (!noteRef.value.id) {
           const newNote = {
             ...noteRef.value,
-            id: notesStore.notes.length ? Math.max(...notesStore.notes.map(note => Number(note.id))) + 1 : 1,
             lastModified: new Date(),
             attachments: []
           }
-          notesStore.addNote(newNote)
-          noteRef.value.id = newNote.id
+          const id = await notesStore.addNote(newNote)
+          noteRef.value.id = id
           isNoteCreated.value = true
         }
         
