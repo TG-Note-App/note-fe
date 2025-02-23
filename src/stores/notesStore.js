@@ -155,6 +155,7 @@ export const useNotesStore = defineStore('notes', {
         }
 
         // Continue with existing update logic
+        updatedNote.id = parseInt(updatedNote.id)
         const response = await fetch(`http://localhost:8080/notes/${updatedNote.id}`, {
           method: 'PUT',
           headers: {
@@ -229,6 +230,37 @@ export const useNotesStore = defineStore('notes', {
       } catch (err) {
         this.error = err.message
         console.error('Error updating pin status:', err)
+        throw err
+      }
+    },
+    async fetchNoteById(noteId) {
+      try {
+        const response = await fetch(`http://localhost:8080/notes/${noteId}`)
+        if (!response.ok) throw new Error('Failed to fetch note')
+        
+        const note = await response.json()
+        // Convert date strings to Date objects and ensure isPinned is boolean
+        const processedNote = {
+          id: note.id,
+          title: note.title,
+          content: note.content,
+          attachments: note.attachments,
+          lastModified: new Date(note.lastModified),
+          isPinned: Boolean(note.isPinned)
+        }
+
+        // Update the note in the store if it exists
+        const noteIndex = this.notes.findIndex(n => n.id === noteId)
+        if (noteIndex !== -1) {
+          this.notes[noteIndex] = processedNote
+        } else {
+          this.notes.push(processedNote)
+        }
+
+        return processedNote
+      } catch (err) {
+        this.error = err.message
+        console.error('Error fetching note:', err)
         throw err
       }
     },

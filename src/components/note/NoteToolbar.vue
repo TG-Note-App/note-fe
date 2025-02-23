@@ -111,15 +111,16 @@ const actionButtons = computed<ActionButton[]>(() => [
   },
 ])
 if (!props.isNewNotePage) {
-  actionButtons.value.push({
-    title: 'New Note',
-    icon: 'bi-plus-square',
-    handler: handleNewNote
-  }, 
-  {
+  actionButtons.value.push(
+    {
     title: 'Delete',
     icon: 'bi-trash',
     handler: () => emit('delete-note')
+  },
+    {
+    title: 'New Note',
+    icon: 'bi-plus-square',
+    handler: handleNewNote
   })
 }
 

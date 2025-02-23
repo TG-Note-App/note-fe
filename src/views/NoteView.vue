@@ -35,6 +35,8 @@ import NoteToolbar from '../components/note/NoteToolbar.vue'
 import NoteEditor from '../components/note/NoteEditor.vue'
 import DeleteNoteModal from '../components/DeleteNoteModal.vue'
 import type { Note } from '../types/note'
+import { debounce } from 'lodash'
+import { isEqual } from 'lodash'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,26 +45,43 @@ const showDeleteModal = ref(false)
 
 // Get note ID from URL
 const noteId = parseInt(route.params.id as string)
-// Get note from store
-const note = computed(() => notesStore.notes.find(note => note.id === noteId))
+
 const noteRef = ref<Note>({
-  id: note.value?.id?.toString() ?? null,
-  title: note.value?.title ?? '',
-  content: note.value?.content ?? '',
+  id: null,
+  title: '',
+  content: '',
   lastModified: new Date(),
-  attachments: note.value?.attachments ?? []
+  attachments: [],
+  isPinned: false,
 })
 
-// Add onMounted hook to fetch note
-// onMounted(async () => {
-//   try {
-//     await notesStore.fetchNoteById(noteId)
-//   } catch (error) {
-//     console.error('Error fetching note:', error)
-//     // Optionally redirect to notes list if note not found
-//     router.push('/notes')
-//   }
-// })
+// Add a ref to store the previous state
+const previousNoteState = ref<Note | null>(null)
+
+// Add onMounted hook to fetch note and file info
+onMounted(async () => {
+  try {
+    // Fetch note data
+    const note = await notesStore.fetchNoteById(noteId)
+    
+    // Update noteRef with the fetched note data
+    if (note) {
+      noteRef.value = {
+        id: note.id?.toString() ?? null,
+        title: note.title ?? '',
+        content: note.content ?? '',
+        lastModified: note.lastModified ?? new Date(),
+        attachments: note.attachments ?? [],
+        isPinned: note.isPinned ?? false,
+      }
+    } else {
+      throw new Error('Note not found')
+    }
+  } catch (error) {
+    console.error('Error fetching note:', error)
+    router.push('/notes')
+  }
+})
 
 const handleDelete = (event) => {
   if (event) {  // Check if event exists
@@ -186,17 +205,49 @@ const handleFileDownload = async (url: string, filename: string, extension: stri
   }
 };
 
-// Add watcher to sync changes back to store
-watch(noteRef, (newValue) => {
-  if (note.value) {
-    notesStore.updateNote({
-      ...note.value,
-      title: newValue.title,
-      content: newValue.content,
-      lastModified: new Date(),
-      attachments: newValue.attachments
-    })
-  }
-}, { deep: true })
+// Replace the existing watch with this debounced version
+watch(
+  noteRef,
+  debounce((newValue) => {
+    if (!newValue.id) return
+
+    // If this is the first change, store the initial state
+    if (!previousNoteState.value) {
+      previousNoteState.value = JSON.parse(JSON.stringify(newValue))
+      return
+    }
+
+    // Compare relevant fields to check if there are actual changes
+    const hasChanges = !isEqual(
+      {
+        title: previousNoteState.value?.title,
+        content: previousNoteState.value?.content,
+        isPinned: previousNoteState.value?.isPinned,
+        attachments: previousNoteState.value?.attachments
+      },
+      {
+        title: newValue.title,
+        content: newValue.content,
+        isPinned: newValue.isPinned,
+        attachments: newValue.attachments
+      }
+    )
+
+    if (hasChanges) {
+      notesStore.updateNote({
+        id: newValue.id,
+        isPinned: newValue.isPinned,
+        title: newValue.title,
+        content: newValue.content,
+        lastModified: new Date(),
+        attachments: newValue.attachments
+      })
+      
+      // Update the previous state after saving
+      previousNoteState.value = JSON.parse(JSON.stringify(newValue))
+    }
+  }, 500), // 500ms debounce delay
+  { deep: true }
+)
 
 </script>
