@@ -22,7 +22,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, watch, provide } from 'vue'
+  import { ref, watch, provide, onMounted } from '@vue/runtime-dom'
   import { useRouter } from 'vue-router'
   import { useNotesStore } from '../stores/notesStore'
   import NoteEditor from '../components/note/NoteEditor.vue'
@@ -37,7 +37,9 @@
     title: '',
     content: '',
     lastModified: new Date(),
-    attachments: []
+    attachments: [],
+    isPinned: false,
+    userId: null
   })
 
   // Add a flag to track if note was created
@@ -53,7 +55,8 @@
             title: noteRef.value.title,
             content: noteRef.value.content,
             lastModified: new Date(),
-            attachments: noteRef.value.attachments
+            attachments: noteRef.value.attachments,
+            userId: noteRef.value.userId
           })
           noteRef.value.id = resp.id
         } else {
@@ -113,7 +116,8 @@ const handleFileSelected = async (files: Array<{
           const newNote = {
             ...noteRef.value,
             lastModified: new Date(),
-            attachments: []
+            attachments: [],
+            userId: userId
           }
           const id = await notesStore.addNote(newNote)
           noteRef.value.id = id
@@ -199,8 +203,16 @@ const handleFileDownload = async (url: string, filename: string, extension: stri
 
   // Provide the method to NoteToolbar
   provide('onBackClick', handleBackClick)
+
+  onMounted(() => {
+    const tg = window.Telegram.WebApp;
+    const userId = tg.initDataUnsafe?.user?.id;
+    console.log("Telegram ID:", userId);
+    noteRef.value.userId = userId ?? 0;
+  })
   </script>
   
   <style>
   /* Move to global styles or separate style file */
-  </style> 
+  </style>
+

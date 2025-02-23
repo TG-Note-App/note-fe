@@ -96,8 +96,10 @@ export const useNotesStore = defineStore('notes', {
       this.error = null
       try {
         const response = await fetch('http://localhost:8080/notes')
+        console.log(response)
         if (!response.ok) throw new Error('Failed to fetch notes')
         const data = await response.json()
+        console.log(data)
         // Convert date strings to Date objects and ensure isPinned is boolean
         this.notes = data.map(note => ({
           ...note,
@@ -115,6 +117,7 @@ export const useNotesStore = defineStore('notes', {
     },
     async addNote(note) {
       try {
+        console.log('note', JSON.stringify(note))
         const response = await fetch('http://localhost:8080/notes', {
           method: 'POST',
           headers: {

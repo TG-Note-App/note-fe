@@ -5,6 +5,7 @@ export interface Note {
   lastModified: Date
   attachments: Attachment[]
   isPinned: boolean
+  userId: number
 } 
 
 export interface Attachment {
