@@ -1,10 +1,10 @@
 <template>
-  <div class="group flex items-center w-[280px] gap-2 p-2 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow transition-all duration-200">
+  <div class="group flex items-center w-[280px] gap-2 p-2 bg-sky-100 rounded-lg bordershadow-sm hover:shadow transition-all duration-200">
     <!-- File Icon based on extension -->
     <div class="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg" :class="{
-      'bg-blue-50 group-hover:bg-blue-100': isDocument,
-      'bg-green-50 group-hover:bg-green-100': isImage,
-      'bg-purple-50 group-hover:bg-purple-100': !isImage && !isDocument
+      'bg-blue-100 group-hover:bg-blue-200': isDocument,
+      'bg-green-100 group-hover:bg-green-200': isImage,
+      'bg-purple-100 group-hover:bg-purple-200': !isImage && !isDocument
     }">
       <i v-if="isImage" 
          class="bi bi-image text-2xl"
