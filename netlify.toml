@@ -4,6 +4,6 @@
 
 [[redirects]]
   from = "/notes/*"
-  to = "${VITE_BACKEND_URL}/notes/:splat"
+  to = "http://81.177.223.139:8080/notes/:splat"
   status = 200
   force = true
