@@ -1,9 +1,0 @@
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[[redirects]]
-  from = "/notes/*"
-  to = "http://81.177.223.139:8080/notes/:splat"
-  status = 200
-  force = true
