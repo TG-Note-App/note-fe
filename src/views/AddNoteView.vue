@@ -27,7 +27,7 @@ import { useRouter } from "vue-router";
 import { useNotesStore } from "../stores/notesStore";
 import NoteEditor from "../components/note/NoteEditor.vue";
 import NoteToolbar from "../components/note/NoteToolbar.vue";
-import type { Note } from "../types/note";
+import type { Note, TelegramInitData } from "../types/note";
 
 const notesStore = useNotesStore();
 const router = useRouter();
@@ -40,6 +40,13 @@ const noteRef = ref<Note>({
   attachments: [],
   isPinned: false,
   userId: null,
+});
+
+const telegramInitDataRef = ref<TelegramInitData>({
+  userId: 0,
+  hash: "",
+  authDate: 0,
+  queryId: "",
 });
 
 // Add a flag to track if note was created
@@ -58,9 +65,13 @@ const handleBackClick = async () => {
         const resp = await notesStore.addNote({
           title: noteRef.value.title,
           content: noteRef.value.content,
-          lastModified: new Date(),
           attachments: noteRef.value.attachments,
-          userId: noteRef.value.userId,
+          telegramInitData: {
+            authDate: telegramInitDataRef.value.authDate,
+            userId: telegramInitDataRef.value.userId,
+            queryId: telegramInitDataRef.value.queryId,
+            hash: telegramInitDataRef.value.hash,
+          },
         });
         noteRef.value.id = resp.id;
       } else {
@@ -121,9 +132,13 @@ const handleFileSelected = async (
         if (!noteRef.value.id) {
           const newNote = {
             ...noteRef.value,
-            lastModified: new Date(),
             attachments: [],
-            userId: noteRef.value.userId,
+            telegramInitData: {
+              authDate: telegramInitDataRef.value.authDate,
+              userId: telegramInitDataRef.value.userId,
+              queryId: telegramInitDataRef.value.queryId,
+              hash: telegramInitDataRef.value.hash,
+            },
           };
           const id = await notesStore.addNote(newNote);
           noteRef.value.id = id;
@@ -229,8 +244,10 @@ onMounted(() => {
   const userId = tg?.initDataUnsafe?.user?.id;
   const hash = tg?.initDataUnsafe?.hash;
 
-  noteRef.value.userId = userId ?? 0;
-  noteRef.value.tgHash = hash ?? null;
+  telegramInitDataRef.value.userId = userId ?? 0;
+  telegramInitDataRef.value.authDate = tg?.initDataUnsafe?.auth_date ?? 0;
+  telegramInitDataRef.value.queryId = tg?.initDataUnsafe?.query_id ?? "";
+  telegramInitDataRef.value.hash = hash ?? "";
 });
 </script>
 

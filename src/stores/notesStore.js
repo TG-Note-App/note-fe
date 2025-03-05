@@ -129,19 +129,17 @@ export const useNotesStore = defineStore("notes", {
         this.isLoading = false;
       }
     },
-    async addNote(note) {
+    async addNote(request) {
       try {
-        console.log("note", JSON.stringify(note));
+        console.log("request", JSON.stringify(request));
         const response = await fetch(`${BACKEND_URL}/notes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(note),
+          body: JSON.stringify(request),
         });
 
-        console.log("!!");
-        console.log("response from back", response);
         if (!response.ok) throw new Error("Failed to add note");
 
         // Check if there's actually JSON content to parse

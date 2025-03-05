@@ -6,7 +6,20 @@ export interface Note {
   attachments: Attachment[];
   isPinned: boolean;
   userId: number | null;
-  tgHash: string | null;
+}
+
+export interface NoteRequest {
+  title: string;
+  content: string;
+  attachments: Attachment[];
+  telegramInitData: TelegramInitData;
+}
+
+export interface TelegramInitData {
+  authDate: number;
+  userId: number;
+  queryId: string;
+  hash: string;
 }
 
 export interface Attachment {
