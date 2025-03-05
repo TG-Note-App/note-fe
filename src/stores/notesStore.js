@@ -27,7 +27,6 @@ export const useNotesStore = defineStore("notes", {
           `${BACKEND_URL}/notes/${noteId}/delete-file`,
           {
             method: "DELETE",
-            mode: "no-cors",
             headers: {
               "Content-Type": "application/json",
             },
@@ -70,7 +69,6 @@ export const useNotesStore = defineStore("notes", {
           `${BACKEND_URL}/notes/${noteId}/upload-file`,
           {
             method: "POST",
-            mode: "no-cors",
             body: formData,
           }
         );
@@ -136,7 +134,6 @@ export const useNotesStore = defineStore("notes", {
         console.log("note", JSON.stringify(note));
         const response = await fetch(`${BACKEND_URL}/notes`, {
           method: "POST",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },
@@ -181,7 +178,6 @@ export const useNotesStore = defineStore("notes", {
         updatedNote.id = parseInt(updatedNote.id);
         const response = await fetch(`${BACKEND_URL}/notes/${updatedNote.id}`, {
           method: "PUT",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },
@@ -220,7 +216,6 @@ export const useNotesStore = defineStore("notes", {
       try {
         const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
           method: "DELETE",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },
@@ -246,7 +241,6 @@ export const useNotesStore = defineStore("notes", {
           `${BACKEND_URL}/notes/${noteId}/toggle-pin`,
           {
             method: "PUT",
-            mode: "no-cors",
             headers: {
               "Content-Type": "application/json",
             },
@@ -267,9 +261,7 @@ export const useNotesStore = defineStore("notes", {
     },
     async fetchNoteById(noteId) {
       try {
-        const response = await fetch(`${BACKEND_URL}/notes/${noteId}`, {
-          mode: "no-cors",
-        });
+        const response = await fetch(`${BACKEND_URL}/notes/${noteId}`);
         if (!response.ok) throw new Error("Failed to fetch note");
 
         const note = await response.json();
