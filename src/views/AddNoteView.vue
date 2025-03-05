@@ -227,8 +227,10 @@ onMounted(() => {
   tg.ready();
 
   const userId = tg?.initDataUnsafe?.user?.id;
-  console.log("Telegram ID:", userId);
+  const hash = tg?.initDataUnsafe?.hash;
+
   noteRef.value.userId = userId ?? 0;
+  noteRef.value.tgHash = hash ?? null;
 });
 </script>
 

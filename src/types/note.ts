@@ -6,6 +6,7 @@ export interface Note {
   attachments: Attachment[];
   isPinned: boolean;
   userId: number | null;
+  tgHash: string | null;
 }
 
 export interface Attachment {
