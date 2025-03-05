@@ -63,7 +63,7 @@ const handleBackClick = async () => {
       if (!noteRef.value.id) {
         // If it's a new note, add it
         const resp = await notesStore.addNote({
-          title: noteRef.value.title,
+          title: noteRef.value.title + "!!!!",
           content: noteRef.value.content,
           attachments: noteRef.value.attachments,
           telegramInitData: {
