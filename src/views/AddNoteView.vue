@@ -259,6 +259,7 @@ onMounted(() => {
   // hash
   const hash = urlParams.get("hash");
   urlParams.delete("hash");
+  urlParams.delete("signature");
 
   // сортировка a->z
   urlParams.sort();
@@ -270,11 +271,7 @@ onMounted(() => {
   dataCheckString = dataCheckString.slice(0, -1); // удаляем последнюю новую строку
 
   // Fix type assignment by ensuring dataUrl is properly typed
-  if (hash !== null) {
-    dataUrl.value = [dataCheckString, hash] as [string, string];
-  } else {
-    dataUrl.value = [dataCheckString, ""] as [string, string];
-  }
+  dataUrl.value = [dataCheckString, hash] as [string, string];
 
   console.log("dataUrl", dataUrl.value);
 });
