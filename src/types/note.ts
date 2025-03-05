@@ -20,6 +20,7 @@ export interface TelegramInitData {
   userId: number;
   queryId: string;
   hash: string;
+  signature: string;
 }
 
 export interface Attachment {

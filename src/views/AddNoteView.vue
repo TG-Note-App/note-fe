@@ -47,6 +47,7 @@ const telegramInitDataRef = ref<TelegramInitData>({
   hash: "",
   authDate: 0,
   queryId: "",
+  signature: "",
 });
 
 // Add a flag to track if note was created
@@ -71,6 +72,7 @@ const handleBackClick = async () => {
             userId: telegramInitDataRef.value.userId,
             queryId: telegramInitDataRef.value.queryId,
             hash: telegramInitDataRef.value.hash,
+            signature: telegramInitDataRef.value.signature,
           },
         });
         noteRef.value.id = resp.id;
@@ -138,6 +140,7 @@ const handleFileSelected = async (
               userId: telegramInitDataRef.value.userId,
               queryId: telegramInitDataRef.value.queryId,
               hash: telegramInitDataRef.value.hash,
+              signature: telegramInitDataRef.value.signature,
             },
           };
           const id = await notesStore.addNote(newNote);
@@ -248,6 +251,7 @@ onMounted(() => {
   telegramInitDataRef.value.authDate = tg?.initDataUnsafe?.auth_date ?? 0;
   telegramInitDataRef.value.queryId = tg?.initDataUnsafe?.query_id ?? "";
   telegramInitDataRef.value.hash = hash ?? "";
+  telegramInitDataRef.value.signature = tg?.initDataUnsafe?.signature ?? "";
 });
 </script>
 
