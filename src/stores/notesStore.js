@@ -105,11 +105,11 @@ export const useNotesStore = defineStore("notes", {
         throw err;
       }
     },
-    async fetchNotes() {
+    async fetchNotes(userId) {
       this.isLoading = true;
       this.error = null;
       try {
-        const response = await fetch(`${BACKEND_URL}/notes`);
+        const response = await fetch(`${BACKEND_URL}/notes?userId=${userId}`);
         console.log(response);
         if (!response.ok) throw new Error("Failed to fetch notes");
         const data = await response.json();
@@ -140,9 +140,9 @@ export const useNotesStore = defineStore("notes", {
           body: JSON.stringify(note),
         });
 
+        console.log("!!");
+        console.log("response from back", response);
         if (!response.ok) throw new Error("Failed to add note");
-
-        console.log("response from back", resp);
 
         // Check if there's actually JSON content to parse
         const contentType = response.headers.get("content-type");
