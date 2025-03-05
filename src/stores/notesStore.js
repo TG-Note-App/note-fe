@@ -111,9 +111,7 @@ export const useNotesStore = defineStore("notes", {
       this.isLoading = true;
       this.error = null;
       try {
-        const response = await fetch(`${BACKEND_URL}/notes`, {
-          mode: "no-cors",
-        });
+        const response = await fetch(`${BACKEND_URL}/notes`);
         console.log(response);
         if (!response.ok) throw new Error("Failed to fetch notes");
         const data = await response.json();
