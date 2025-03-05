@@ -142,6 +142,8 @@ export const useNotesStore = defineStore("notes", {
 
         if (!response.ok) throw new Error("Failed to add note");
 
+        console.log("response from back", resp);
+
         // Check if there's actually JSON content to parse
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
