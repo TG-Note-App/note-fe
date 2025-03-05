@@ -32,7 +32,7 @@ import type { Note, TelegramInitData } from "../types/note";
 const notesStore = useNotesStore();
 const router = useRouter();
 
-const dataCheckString = ref("");
+const dataUrl = ref<[string, string]>(["", ""]);
 const noteRef = ref<Note>({
   id: null,
   title: "",
@@ -68,7 +68,7 @@ const handleBackClick = async () => {
           title: noteRef.value.title + "!!!!",
           content: noteRef.value.content,
           attachments: noteRef.value.attachments,
-          checkDataString: dataCheckString.value,
+          dataUrl: dataUrl.value,
           // telegramInitData: {
           //   authDate: telegramInitDataRef.value.authDate,
           //   userId: telegramInitDataRef.value.userId,
@@ -137,7 +137,7 @@ const handleFileSelected = async (
           const newNote = {
             ...noteRef.value,
             attachments: [],
-            checkDataString: dataCheckString.value,
+            dataUrl: dataUrl.value,
             // telegramInitData: {
             //   authDate: telegramInitDataRef.value.authDate,
             //   userId: telegramInitDataRef.value.userId,
@@ -267,9 +267,15 @@ onMounted(() => {
   for (const [key, value] of urlParams.entries()) {
     dataCheckString += key + "=" + value + "\n";
   }
-
   dataCheckString = dataCheckString.slice(0, -1); // удаляем последнюю новую строку
 
-  console.log("dataCheckString", dataCheckString);
+  // Fix type assignment by ensuring dataUrl is properly typed
+  if (hash !== null) {
+    dataUrl.value = [dataCheckString, hash] as [string, string];
+  } else {
+    dataUrl.value = [dataCheckString, ""] as [string, string];
+  }
+
+  console.log("dataUrl", dataUrl.value);
 });
 </script>

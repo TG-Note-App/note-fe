@@ -12,7 +12,7 @@ export interface NoteRequest {
   title: string;
   content: string;
   attachments: Attachment[];
-  checkDataString: string;
+  dataUrl: [string, string];
 }
 
 export interface TelegramInitData {

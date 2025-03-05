@@ -133,9 +133,6 @@ export const useNotesStore = defineStore("notes", {
     async addNote(request) {
       try {
         console.log("request", JSON.stringify(request));
-        request.telegramInitData.authDate = parseInt(
-          request.telegramInitData.authDate
-        );
         const response = await fetch(`${BACKEND_URL}/notes`, {
           method: "POST",
           headers: {
