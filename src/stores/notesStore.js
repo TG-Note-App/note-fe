@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { Buffer } from "buffer";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -132,6 +133,13 @@ export const useNotesStore = defineStore("notes", {
     async addNote(request) {
       try {
         console.log("request", JSON.stringify(request));
+        const hashHex = Buffer.from(
+          request.telegramInitData.hash,
+          "base64"
+        ).toString("hex");
+        // console.log("hashHex", hashHex);
+        // console.log("request.telegramInitData", request.telegramInitData);
+        request.telegramInitData.hash = hashHex;
         request.telegramInitData.authDate = parseInt(
           request.telegramInitData.authDate
         );
