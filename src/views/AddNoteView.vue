@@ -32,6 +32,7 @@ import type { Note, TelegramInitData } from "../types/note";
 const notesStore = useNotesStore();
 const router = useRouter();
 
+const dataCheckString = ref("");
 const noteRef = ref<Note>({
   id: null,
   title: "",
@@ -67,13 +68,14 @@ const handleBackClick = async () => {
           title: noteRef.value.title + "!!!!",
           content: noteRef.value.content,
           attachments: noteRef.value.attachments,
-          telegramInitData: {
-            authDate: telegramInitDataRef.value.authDate,
-            userId: telegramInitDataRef.value.userId,
-            queryId: telegramInitDataRef.value.queryId,
-            hash: telegramInitDataRef.value.hash,
-            signature: telegramInitDataRef.value.signature,
-          },
+          checkDataString: dataCheckString.value,
+          // telegramInitData: {
+          //   authDate: telegramInitDataRef.value.authDate,
+          //   userId: telegramInitDataRef.value.userId,
+          //   queryId: telegramInitDataRef.value.queryId,
+          //   hash: telegramInitDataRef.value.hash,
+          //   signature: telegramInitDataRef.value.signature,
+          // },
         });
         noteRef.value.id = resp.id;
       } else {
@@ -135,13 +137,14 @@ const handleFileSelected = async (
           const newNote = {
             ...noteRef.value,
             attachments: [],
-            telegramInitData: {
-              authDate: telegramInitDataRef.value.authDate,
-              userId: telegramInitDataRef.value.userId,
-              queryId: telegramInitDataRef.value.queryId,
-              hash: telegramInitDataRef.value.hash,
-              signature: telegramInitDataRef.value.signature,
-            },
+            checkDataString: dataCheckString.value,
+            // telegramInitData: {
+            //   authDate: telegramInitDataRef.value.authDate,
+            //   userId: telegramInitDataRef.value.userId,
+            //   queryId: telegramInitDataRef.value.queryId,
+            //   hash: telegramInitDataRef.value.hash,
+            //   signature: telegramInitDataRef.value.signature,
+            // },
           };
           const id = await notesStore.addNote(newNote);
           noteRef.value.id = id;
@@ -235,26 +238,38 @@ const handleFileDownload = async (
 provide("onBackClick", handleBackClick);
 onMounted(() => {
   // Handle case where Telegram WebApp is not available
-  const tg = (window as any).Telegram?.WebApp;
-  if (!tg) {
+  const tgApp = (window as any).Telegram?.WebApp;
+  if (!tgApp) {
     console.warn("Telegram WebApp is not available");
     return;
   }
 
   // Подготовка к получению данных
-  tg.ready();
+  tgApp.ready();
 
-  const userId = tg?.initDataUnsafe?.user?.id;
-  const hash = tg?.initDataUnsafe?.hash;
+  // telegramInitDataRef.value.userId =
+  //   tgApp?.initDataUnsafe?.user?.id ?? 336204548;
+  // telegramInitDataRef.value.authDate = tgApp?.initDataUnsafe?.auth_date ?? 0;
+  // telegramInitDataRef.value.queryId = tgApp?.initDataUnsafe?.query_id ?? "";
+  // telegramInitDataRef.value.hash = tgApp?.initDataUnsafe?.hash ?? "";
+  // telegramInitDataRef.value.signature = tgApp?.initDataUnsafe?.signature ?? "";
 
-  telegramInitDataRef.value.userId = userId ?? 0;
-  telegramInitDataRef.value.authDate = tg?.initDataUnsafe?.auth_date ?? 0;
-  telegramInitDataRef.value.queryId = tg?.initDataUnsafe?.query_id ?? "";
-  telegramInitDataRef.value.hash = hash ?? "";
-  telegramInitDataRef.value.signature = tg?.initDataUnsafe?.signature ?? "";
+  const urlParams = new URLSearchParams(tgApp.initData);
+
+  // hash
+  const hash = urlParams.get("hash");
+  urlParams.delete("hash");
+
+  // сортировка a->z
+  urlParams.sort();
+
+  let dataCheckString = "";
+  for (const [key, value] of urlParams.entries()) {
+    dataCheckString += key + "=" + value + "\n";
+  }
+
+  dataCheckString = dataCheckString.slice(0, -1); // удаляем последнюю новую строку
+
+  console.log("dataCheckString", dataCheckString);
 });
 </script>
-
-<style>
-/* Move to global styles or separate style file */
-</style>
