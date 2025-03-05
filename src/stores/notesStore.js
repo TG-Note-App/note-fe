@@ -133,7 +133,6 @@ export const useNotesStore = defineStore("notes", {
     async addNote(request) {
       try {
         console.log("request", JSON.stringify(request));
-        request.telegramInitData.hash = hashHex;
         request.telegramInitData.authDate = parseInt(
           request.telegramInitData.authDate
         );
