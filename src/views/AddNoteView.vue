@@ -254,22 +254,22 @@ onMounted(() => {
   // telegramInitDataRef.value.hash = tgApp?.initDataUnsafe?.hash ?? "";
   // telegramInitDataRef.value.signature = tgApp?.initDataUnsafe?.signature ?? "";
 
-  const urlParams = new URLSearchParams(tgApp.initData);
+  const initData = tgApp.initData;
 
-  // hash
-  const hash = urlParams.get("hash");
-  urlParams.delete("hash");
-  urlParams.delete("signature");
-
-  // сортировка a->z
-  urlParams.sort();
-
-  let dataCheckString = "";
-  for (const [key, value] of urlParams.entries()) {
-    dataCheckString += key + "=" + value + "\n";
+  const params = {};
+  const pairs = initData.split("&");
+  for (const pair of pairs) {
+    const [key, value] = pair.split("=");
+    params[key] = value;
   }
-
-  // Fix type assignment by ensuring dataUrl is properly typed
+  const hash = params["hash"];
+  delete params["hash"];
+  delete params["signature"];
+  // Сортировка параметров по ключу
+  const sortedParams = Object.keys(params)
+    .sort()
+    .map((key) => key + "=" + params[key]);
+  let dataCheckString = sortedParams.join("\n") + "\n";
   dataUrl.value = [dataCheckString, hash] as [string, string];
 
   console.log("dataUrl", dataUrl.value);
