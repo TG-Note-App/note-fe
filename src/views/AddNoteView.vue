@@ -268,7 +268,6 @@ onMounted(() => {
   for (const [key, value] of urlParams.entries()) {
     dataCheckString += key + "=" + value + "\n";
   }
-  dataCheckString = dataCheckString.slice(0, -1); // удаляем последнюю новую строку
 
   // Fix type assignment by ensuring dataUrl is properly typed
   dataUrl.value = [dataCheckString, hash] as [string, string];
