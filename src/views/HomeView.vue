@@ -1,6 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-    <div class="max-w-4xl mx-auto px-4 sm:px-8 pb-16">
+  <div
+    class="fixed inset-0 min-h-screen bg-gradient-to-br from-gray-900 to-black overflow-auto"
+  >
+    <div class="min-h-screen max-w-4xl mx-auto px-4 sm:px-8 pb-16">
       <AppHeader @new-note="handleNewNote" />
       <SearchBar v-model="search" />
       <NotesList :notes="filteredNotes" />
@@ -48,6 +50,13 @@ const handleNewNote = () => {
 </script>
 
 <style>
+body {
+  @apply bg-black;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 @keyframes gradient-x {
   0% {
     background-position: 0% 50%;
