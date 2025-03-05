@@ -68,14 +68,7 @@ const handleBackClick = async () => {
           title: noteRef.value.title + "!!!!",
           content: noteRef.value.content,
           attachments: noteRef.value.attachments,
-          dataUrl: dataUrl.value,
-          // telegramInitData: {
-          //   authDate: telegramInitDataRef.value.authDate,
-          //   userId: telegramInitDataRef.value.userId,
-          //   queryId: telegramInitDataRef.value.queryId,
-          //   hash: telegramInitDataRef.value.hash,
-          //   signature: telegramInitDataRef.value.signature,
-          // },
+          userId: noteRef.value.userId,
         });
         noteRef.value.id = resp.id;
       } else {
@@ -137,14 +130,7 @@ const handleFileSelected = async (
           const newNote = {
             ...noteRef.value,
             attachments: [],
-            dataUrl: dataUrl.value,
-            // telegramInitData: {
-            //   authDate: telegramInitDataRef.value.authDate,
-            //   userId: telegramInitDataRef.value.userId,
-            //   queryId: telegramInitDataRef.value.queryId,
-            //   hash: telegramInitDataRef.value.hash,
-            //   signature: telegramInitDataRef.value.signature,
-            // },
+            userId: noteRef.value.userId,
           };
           const id = await notesStore.addNote(newNote);
           noteRef.value.id = id;
@@ -247,31 +233,6 @@ onMounted(() => {
   // Подготовка к получению данных
   tgApp.ready();
 
-  // telegramInitDataRef.value.userId =
-  //   tgApp?.initDataUnsafe?.user?.id ?? 336204548;
-  // telegramInitDataRef.value.authDate = tgApp?.initDataUnsafe?.auth_date ?? 0;
-  // telegramInitDataRef.value.queryId = tgApp?.initDataUnsafe?.query_id ?? "";
-  // telegramInitDataRef.value.hash = tgApp?.initDataUnsafe?.hash ?? "";
-  // telegramInitDataRef.value.signature = tgApp?.initDataUnsafe?.signature ?? "";
-
-  const initData = tgApp.initData;
-
-  const params = {};
-  const pairs = initData.split("&");
-  for (const pair of pairs) {
-    const [key, value] = pair.split("=");
-    params[key] = value;
-  }
-  const hash = params["hash"];
-  delete params["hash"];
-  delete params["signature"];
-  // Сортировка параметров по ключу
-  const sortedParams = Object.keys(params)
-    .sort()
-    .map((key) => key + "=" + params[key]);
-  let dataCheckString = sortedParams.join("\n") + "\n";
-  dataUrl.value = [dataCheckString, hash] as [string, string];
-
-  console.log("dataUrl", dataUrl.value);
+  noteRef.value.userId = tgApp?.initDataUnsafe?.user?.id ?? 0;
 });
 </script>
