@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 
 import { useNotesStore } from "../stores/notesStore";
@@ -21,11 +21,22 @@ import NotesList from "../components/NotesList.vue";
 
 // State
 const router = useRouter();
-
 const notesStore = useNotesStore();
 const search = ref("");
 
 const filteredNotes = computed(() => notesStore.filteredNotes(search.value));
+
+// Добавляем функцию для принудительного обновления списка заметок
+const refreshNotes = async () => {
+  const tg = window.Telegram?.WebApp;
+  const userId = tg?.initDataUnsafe?.user?.id ?? 336204548;
+  await notesStore.fetchNotes(userId);
+};
+
+// Вызываем обновление при каждом входе на страницу
+onBeforeMount(() => {
+  refreshNotes();
+});
 
 onMounted(() => {
   // Handle case where Telegram WebApp is not available
@@ -38,10 +49,8 @@ onMounted(() => {
   // Подготовка к получению данных
   tg.ready();
 
-  const userId = tg?.initDataUnsafe?.user?.id;
+  const userId = tg?.initDataUnsafe?.user?.id ?? 0;
   console.log("Telegram ID:", userId);
-
-  notesStore.fetchNotes(userId);
 });
 
 const handleNewNote = () => {

@@ -63,26 +63,30 @@ const handleBackClick = async () => {
       noteRef.value.attachments?.length > 0
     ) {
       if (!noteRef.value.id) {
-        // If it's a new note, add it
+        // Сохраняем заметку и ждем завершения операции
         const resp = await notesStore.addNote({
-          title: noteRef.value.title + "!!!!",
+          title: noteRef.value.title,
           content: noteRef.value.content,
           attachments: noteRef.value.attachments,
           userId: noteRef.value.userId,
         });
-        noteRef.value.id = resp.id;
+
+        // После успешного сохранения переходим на главную
+        router.push("/notes");
       } else {
-        // If it's an existing note, update it
+        // Обновляем существующую заметку
         await notesStore.updateNote({
           ...noteRef.value,
           lastModified: new Date(),
         });
+        router.push("/notes");
       }
+    } else {
+      router.push("/notes");
     }
-    router.push("/notes");
   } catch (error) {
     console.error("Error saving note:", error);
-    // You might want to add some error handling UI feedback here
+    router.push("/notes");
   }
 };
 

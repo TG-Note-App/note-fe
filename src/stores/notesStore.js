@@ -130,31 +130,37 @@ export const useNotesStore = defineStore("notes", {
         this.isLoading = false;
       }
     },
-    async addNote(request) {
+    async addNote(note) {
       try {
-        console.log("request", JSON.stringify(request));
+        this.isLoading = true;
+        console.log("Adding note:", JSON.stringify(note));
+
         const response = await fetch(`${BACKEND_URL}/notes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(request),
+          body: JSON.stringify(note),
         });
 
         if (!response.ok) throw new Error("Failed to add note");
 
-        // Check if there's actually JSON content to parse
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const resp = await response.json();
-          note.id = resp.id;
-          this.notes.push(note);
-          return resp.id;
+          console.log("Server response:", resp);
+
+          // Сразу после добавления заметки обновляем весь список с сервера
+          await this.fetchNotes(note.userId);
+
+          return resp;
         }
       } catch (err) {
         this.error = err.message;
         console.error("Error adding note:", err);
         throw err;
+      } finally {
+        this.isLoading = false;
       }
     },
     async updateNote(updatedNote) {
