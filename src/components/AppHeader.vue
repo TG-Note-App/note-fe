@@ -1,20 +1,12 @@
 <template>
   <div class="flex justify-between items-center text-white pt-8 sm:pt-12">
-    <h2 
-      class="text-3xl sm:text-5xl font-bold tracking-wider hover:text-gray-300 transition-all duration-300 
-        bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent 
-        transform cursor-default"
+    <h2
+      class="text-3xl sm:text-5xl font-bold tracking-wider hover:text-gray-300 transition-all duration-300 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent transform cursor-default"
     >
-      Заметки
+      Notes
     </h2>
-    <button 
-      class="w-10 h-10 sm:w-14 sm:h-14 rounded-full 
-        bg-gradient-to-r from-gray-700 to-gray-800 
-        hover:from-gray-600 hover:to-gray-700 
-        transition-all duration-300 shadow-lg 
-        flex items-center justify-center 
-        transform hover:scale-110 hover:rotate-180 
-        hover:shadow-xl hover:shadow-gray-700/30"
+    <button
+      class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-lg flex items-center justify-center transform hover:scale-110 hover:rotate-180 hover:shadow-xl hover:shadow-gray-700/30"
       @click="$emit('new-note')"
     >
       <i class="bi bi-plus-lg text-xl sm:text-2xl"></i>
@@ -23,7 +15,7 @@
 </template>
 
 <script setup>
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-defineEmits(['new-note']);
-</script> 
+defineEmits(["new-note"]);
+</script>

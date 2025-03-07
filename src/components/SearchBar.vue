@@ -1,15 +1,13 @@
 <template>
   <div class="search-container group">
-    <input 
+    <input
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       type="text"
-      placeholder="Поиск заметок..."
+      placeholder="Search notes..."
       class="search-input"
     />
-    <i 
-      class="bi bi-search search-icon cursor-pointer" 
-    ></i>
+    <i class="bi bi-search search-icon cursor-pointer"></i>
   </div>
 </template>
 
@@ -17,11 +15,11 @@
 defineProps({
   modelValue: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-defineEmits(['update:modelValue']);
+defineEmits(["update:modelValue"]);
 </script>
 
 <style scoped>
@@ -84,4 +82,3 @@ defineEmits(['update:modelValue']);
   backface-visibility: hidden;
 }
 </style>
-  

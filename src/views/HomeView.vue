@@ -29,7 +29,7 @@ const filteredNotes = computed(() => notesStore.filteredNotes(search.value));
 // Добавляем функцию для принудительного обновления списка заметок
 const refreshNotes = async () => {
   const tg = window.Telegram?.WebApp;
-  const userId = tg?.initDataUnsafe?.user?.id ?? 336204548;
+  const userId = tg?.initDataUnsafe?.user?.id ?? 0;
   await notesStore.fetchNotes(userId);
 };
 
