@@ -5,7 +5,7 @@
         :note-id="noteRef.id ? Number(noteRef.id) : undefined"
         @delete-note="handleDelete"
         @file-selected="handleFileSelected"
-        :isNewNotePage="false"
+        :isNewNotePage="true"
         :noteTitle="noteRef.title"
         :noteContent="noteRef.content"
         :attachments="noteRef.attachments"
