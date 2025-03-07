@@ -1,35 +1,35 @@
 <template>
   <div class="mt-4 sm:mt-10 space-y-6 sm:space-y-8">
-    <div v-for="(notes, timeGroup) in groupedNotes" :key="timeGroup" 
+    <div
+      v-for="(notes, timeGroup) in groupedNotes"
+      :key="timeGroup"
       class="space-y-1 sm:space-y-4 first:animate-fadeIn"
     >
       <DateHeader :title="timeGroup" />
-      <NoteGroup 
-        :notes="notes" 
-      />
+      <NoteGroup :notes="notes" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import DateHeader from './DateHeader.vue';
-import NoteGroup from './NoteGroup.vue';
+import { computed } from "vue";
+import DateHeader from "./DateHeader.vue";
+import NoteGroup from "./NoteGroup.vue";
 
 const props = defineProps({
   notes: {
     type: Array,
-    required: true
+    required: true,
   },
   search: {
     type: String,
-    default: ''
-  }
+    default: "",
+  },
 });
 
 // Extract filtering logic to a separate computed property
-const filteredNotes = computed(() => 
-  props.notes.filter(note =>
+const filteredNotes = computed(() =>
+  props.notes.filter((note) =>
     note?.content?.toLowerCase().includes(props.search.toLowerCase())
   )
 );
@@ -57,28 +57,28 @@ const isWithinDays = (date, days) => {
 // Updated grouping logic
 const groupedNotes = computed(() => {
   const groups = {
-    'ЗАКРЕПЛЕНО': [],
-    'СЕГОДНЯ': [],
-    'ВЧЕРА': [],
-    'Последние 7 дней': [],
-    'Последние 30 дней': [],
-    'РАНЕЕ': []
+    PINNED: [],
+    TODAY: [],
+    YESTERDAY: [],
+    "LAST 7 DAYS": [],
+    "LAST 30 DAYS": [],
+    EARLIER: [],
   };
 
-  filteredNotes.value.forEach(note => {
+  filteredNotes.value.forEach((note) => {
     const noteDate = new Date(note.lastModified);
     if (note.isPinned) {
-      groups['ЗАКРЕПЛЕНО'].push(note);
+      groups["PINNED"].push(note);
     } else if (isToday(noteDate)) {
-      groups['СЕГОДНЯ'].push(note);
+      groups["TODAY"].push(note);
     } else if (isYesterday(noteDate)) {
-      groups['ВЧЕРА'].push(note);
+      groups["YESTERDAY"].push(note);
     } else if (isWithinDays(noteDate, 7)) {
-      groups['Последние 7 дней'].push(note);
+      groups["LAST 7 DAYS"].push(note);
     } else if (isWithinDays(noteDate, 30)) {
-      groups['Последние 30 дней'].push(note);
+      groups["LAST 30 DAYS"].push(note);
     } else {
-      groups['РАНЕЕ'].push(note);
+      groups["EARLIER"].push(note);
     }
   });
 
@@ -87,4 +87,4 @@ const groupedNotes = computed(() => {
     Object.entries(groups).filter(([_, notes]) => notes.length > 0)
   );
 });
-</script> 
+</script>
